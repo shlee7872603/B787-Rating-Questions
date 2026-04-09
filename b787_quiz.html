@@ -182,13 +182,13 @@ const Q=[
 {c:'LIGHTING',q:'Emergency light switch 위치에 따른 현상 중 맞는 것은?',o:['OFF - prevents emergency lights system operation if airplane electrical power fails or is turned off','ARMED - all emergency lights illuminate automatically if airplane electrical power fails or is turned off','DISARMED - all emergency lights illuminate automatically if airplane electrical power fails or is turned off','ON - Only floor passenger emergency lights illuminate'],a:1},
 {c:'LIGHTING',q:'Exterior light 중 B787 항공기에 장착되지 않은 것은?',o:['Strobe light','Logo light','Runway turn on light','Navigation light'],a:2},
 {c:'LIGHTING',q:'Beacon lights의 Color 및 장착 위치 중 맞는 것은?',o:['Red - On the top of the wing','Red - On the top and bottom of the fuselage','Red - On the top and bottom of the wing','Red - On the bottom of the wing'],a:1},
-{c:'LIGHTING',q:'Seat belt signs switch를 Auto 위치에 두었을 경우 Seat belt sign은 언제 On되는가?',o:['Flap lever at 1-5 or greater','Passenger oxygen off','Aircraft altitude below airline defined','Cabin altitude above 10,000 feet'],a:3},
+{c:'LIGHTING',q:'Seat belt signs switch를 Auto 위치에 두었을 경우 Seat belt sign은 언제 On되는가?',o:['Flap lever at 1 or greater','Passenger oxygen off','Aircraft altitude above 10,000 feet','Cabin altitude above 10,000 feet'],a:3},
 {c:'MASTER WARNING',q:'EICAS에 시현된 Warning message를 Cancelled and removed하는 방법은?',o:['Push the CAN/RCL switch','A warning cannot be cancelled','Push the MASTER WARNING switch','Shut down the affected system'],a:2},
 {c:'MASTER WARNING',q:'다음 Alert level 중 Highest priority alert messages를 고르시오.',o:['Advisory message','Caution message','Memo and Status Message','Warning message'],a:3},
 {c:'MASTER WARNING',q:'B787 항공기는 Evacuation horn cutoff button이 없다. Horn cutoff할 수 있는 방법은?',o:['Glare shield Panel의 Master WARNING/CAUTION Reset Switch','AFT Aisle Stand의 AURAL CANCEL button','G/S INHIBIT button','Overhead Panel의 FIRE/OVHT TEST button'],a:1},
 {c:'MASTER WARNING',q:'Time critical warning alert가 아닌 것은?',o:['PULL UP','ENG FAIL','SPEEDBRAKE','GLIDESLOPE'],a:3},
 {c:'MASTER WARNING',q:'EICAS event record switch를 Push하면 몇 개의 Event를 Memory시킬 수 있나?',o:['Up to three','Up to four','Up to five','Up to six'],a:1},
-{c:'MASTER WARNING',q:'Takeoff 시 Crew alerting inhibit 설명 중 맞는 것은?',o:['ENG START 후부터 Status cue는 Inhibit된다','Cabin alert 제외하고 Takeoff thrust set 후부터 Inhibit된다','80kts RTO 후 Ground speed 75kts 이하가 되면 Inhibit되었던 Caution 및 Advisory message들이 나타난다','Master warning light는 V1 또는 Rotation 중 나중에 발생되는 시점부터 Inhibit된다'],a:2},
+{c:'MASTER WARNING',q:'Takeoff 시 Crew alerting inhibit 설명 중 맞는 것은?',o:['Takeoff 후부터 Status cue는 Inhibit된다','Cabin alert는 Takeoff thrust set 후부터 Inhibit된다','80kts 이상에서 Reject takeoff 후 Ground speed 75kts 이하가 되면 Inhibit되었던 새로운 Caution 및 Advisory message와 Master Caution light, sound alert들이 나타난다','Master warning light와 Sound alert는 V1 또는 Rotation 중 나중에 발생되는 시점부터 Inhibit된다'],a:2},
 {c:'MASTER WARNING',q:'Takeoff configuration warning이 발생되는 조건이 아닌 것은?',o:['Leading edge and/or trailing edge flaps are not in takeoff position and either engine thrust is in the takeoff range','Parking brake is set and either engine thrust is in the takeoff range','Rudder Trim not centered when either engine thrust is in the takeoff range','Nose gear is not centered when either engine thrust is in the takeoff range'],a:3},
 {c:'MASTER WARNING',q:'GPWS 설명 중 맞는 것은?',o:['GPWS는 독립된 Computer가 있어 신뢰성을 증가하였다','이륙 중이거나 Go-Around 시 Flaps/gear up 상태에서 고도가 감소하면 DON\'T SINK message와 aural alert가 발생한다','HUD에는 GPWS warning이 시현되지 않는다','GPWS warning 발생 시 AURAL CANCEL Switch를 사용하여 Aural alert들을 취소해야 한다'],a:1},
 {c:'MASTER WARNING',q:'EICAS messages 설명 중 맞는 것은?',o:['EICAS alert messages are the primary method to alert the crew to non-normal conditions','EICAS communication messages are crew reminders of certain flight crew selected normal conditions','EICAS memo messages indicate equipment faults which may affect airplane dispatch capability','EICAS status messages direct the crew to normal'],a:0},
@@ -286,7 +286,7 @@ const Q=[
 {c:'FLIGHT CONTROL',q:'Expanded Flap and Slat Position Indications 설명 중 잘못된 것은?',o:['The slat indication fills up (forward) for extension','The flap indication fills down (aft) for extension','Indication colors WHITE when operating in secondary mode','Indication colors RED-AMBER when the respective FLAPS DRIVE or SLATS DRIVE EICAS caution message is displayed'],a:3},
 {c:'FLIGHT CONTROL',q:'Primary Flight Control System Mode 중 하나가 아닌 것은?',o:['Normal','Alternate','Secondary','Direct'],a:1},
 {c:'FLIGHT CONTROL',q:'The spoilers automatically retract and speedbrake lever moves to DOWN position이 되는 조건이 아닌 것은?',o:['On the ground, when either thrust lever is moved to the takeoff range','On the ground, if there is a transition to in the air','On the ground and both thrust reverse levers are moved to the reverse idle detent','In the air, when either thrust lever is beyond 90% full travel'],a:3},
-{c:'FLIGHT CONTROL',q:'Flap and Slat Mode가 secondary mode로 automatically selected되는 condition이 아닌 것은?',o:['Center hydraulic system failed','Control surfaces travel at less than 50% of the normal hydraulic rate','Flap or slat disagree is detected','Flap or slat primary control failure'],a:0},
+{c:'FLIGHT CONTROL',q:'Flap and Slat Mode가 secondary mode로 automatically selected되는 condition이 아닌 것은?',o:['Center hydraulic system failed','Control surfaces travel at less than 80% of the normal hydraulic rate','Flap or slat disagree is detected','Flap or slat primary control failure'],a:1},
 {c:'FLIGHT CONTROL',q:'Flap/Slat Load Relief 관련 설명 중 틀린 것은?',o:['In the primary mode, the flap load relief system protects the flaps from excessive air loads','If flap airspeed placard limits are exceeded with flaps in 15 through 30 position, LOAD RELIEF is displayed and flaps retract to safe position','Load relief retraction is limited to flaps 1-5','When airspeed is reduced, the flaps automatically re-extend as airspeed allows'],a:2},
 {c:'OXYGEN',q:'Passenger cabin oxygen masks automatically drop prior to the cabin altitude reaching the greater of what altitude?',o:['13,500 feet, or 2000 feet above the origin or destination airfield','13,000 feet, or 1000 feet above origin or destination airfield +2000 feet','14,500 feet, or origin airfield altitude +1500 feet, or destination airfield altitude +1500 feet','14,000 feet, or 1000 feet above origin or destination airfield altitude +1000 feet'],a:2},
 {c:'OXYGEN',q:'Emergency (EMGCY)/100%/Normal (N) Selector 설명 중 잘못된 것은?',o:['EMGCY - supplies 100% oxygen under positive pressure at all cabin altitudes (protects against smoke and harmful vapors)','100% - supplies 100% oxygen on demand (not an air/oxygen mixture)','N (normal) - supplies an air/oxygen mixture on demand (ratio depends on cabin altitude)','N (normal) - Automatically supplies 100% oxygen on demand when cabin altitude is below 10,000 feet'],a:3},
@@ -375,7 +375,39 @@ let shuffledOpts=[];
 function render(){
   if(idx>=queue.length){showResult();return;}
   answered=false;
-  const q=queue[idx];
+  const q=queue[idx
+// ── NEW / VARIANT QUESTIONS from 2025.4.19 PDF ──
+
+// FUEL variant
+{c:'FUEL',q:'각 Fuel tank Capacities가 바르게 연결된 것은? (variant)',o:['Left main tank – 36,948 Pounds','Right main tank – 36,974 Pounds','Center tank – 149,684 Pounds','Total – 223,646 Pounds'],a:1},
+
+// LIGHTING - STORM light 영향 받지 않는 것
+{c:'LIGHTING',q:'STORM light switch를 on 하였을 경우 영향을 받지 않는 Light는 무엇인가?',o:['All illuminated indicator lights','Glareshield flood lights','After dome lights','Aisle stand flood lights'],a:1},
+
+// MASTER WARNING variants
+{c:'MASTER WARNING',q:'항공기가 지상에서 Takeoff configuration warning function이 Arm되는 시기는? (variant)',o:['Both engine thrust is in takeoff range','Either fuel control switches are in Run position','Thrust reversers are locked','Airspeed is less than V1'],a:1},
+{c:'MASTER WARNING',q:'다음 airspeed alert 설명 중 틀린 것은? (variant)',o:['Takeoff V1 Airspeed – The voice annunciation VEE ONE sounds before reaches V1 during takeoff','Thrust Asymmetry Minimum Speed (TAMS) – is displayed on the speed tape to provide pilots with situational awareness of the maximum control speed for operation with a large thrust asymmetry','AIRSPEED LOW is displayed and the box around the current airspeed indication on the PFD is highlighted amber when airspeed is below minimum maneuvering speed','OVERSPEED is displayed if airspeed is greater than VMO/MMO. The message cannot be canceled by pushing Master WARNING/CAUTION Reset switch'],a:1},
+
+// POWER PLANT variants
+{c:'POWER PLANT / APU',q:'B787 GEnx-1B74/75 Engine 설명 중 맞는 것은? (variant)',o:['Chevron Shape Nacelle이 장착되어 Engine 소음이 전혀 없다','EDTO는 120분까지 FAA에서 인가 받았다','Takeoff thrust는 각각 74,200 pounds이다','Engine Bleed Air를 전혀 사용하지 않아 연료를 절감되었다'],a:3},
+{c:'POWER PLANT / APU',q:'Secondary engine indication이 시현되는 경우는? (variant)',o:['Lower display가 처음으로 전원을 공급 받을 때','Secondary Engine Parameter 중 Exceedance가 발생될 때','Fuel control SW "RUN"일 때','N1이 IDLE 밑으로 떨어질 때'],a:1},
+
+// HYDRAULIC variants
+{c:'HYDRAULIC',q:'Center hydraulic system isolation functionality. 관련 내용 중 잘못된 것은? (variant)',o:['The isolation function uses a NGIV, RSIV, AEIV and a reservoir standpipe','The hydraulic isolation systems ensure the flight crew can lower the landing gear and nose wheel steering is operational','The isolation valves cannot be controlled by the crew','Reservoir가 있어서 landing gear down, landing roll, taxi가 가능함'],a:3},
+{c:'HYDRAULIC',q:'Hydraulic system에 대한 설명 중 틀린 것은? (variant)',o:['The airplane has two independent 5000psi hydraulic systems','Flight control system components are distributed so that any one hydraulic system can provide adequate airplane controllability','Hydraulic fluid is supplied to each hydraulic pump from the associated system reservoir','The reservoirs are pressurized by pump outlet pressure'],a:0},
+
+// FLIGHT CONTROL new & variants
+{c:'FLIGHT CONTROL',q:'STAB GREENBAND EICAS Message level 종류는?',o:['Warning','Caution','Memo','Advisory'],a:3},
+{c:'FLIGHT CONTROL',q:'Expanded Flap and Slat Position Indications에 대한 설명 중 맞는 것은?',o:['The slat indication fills up (forward) for Retraction','The flap indication fills down (aft) for extension','Indication colors of outline and fill is AMBER when operating in secondary mode','Indication colors of outline and fill is RED when the respective FLAPS DRIVE or SLATS DRIVE EICAS caution message is displayed'],a:1},
+
+// PRESSURIZATION variants
+{c:'PRESSURIZATION',q:'LDG ALT Selector를 Pull ON, then rotate할 경우에 대한 설명으로 틀린 것은? (variant)',o:['Sets landing altitude manually','Landing altitude followed by MAN displayed on PFD','When turned slowly, landing altitude display changes in 100 foot increments','When turned quickly, display changes in 500 foot increments'],a:1},
+{c:'PRESSURIZATION',q:'Pressurization System Automatic Operation 설명 중 틀린 것은? (variant)',o:['For takeoff, the system supplies a small positive pressurization prior to rotation to cause a smooth cabin altitude transition to the cabin altitude climb schedule','In climb mode, cabin altitude increases on a schedule related to the airplane climb rate and flight plan cruise altitude','During descent, cabin altitude decreases to slightly above the FMC planned landing altitude','At touchdown, both outflow valves open to depressurize the cabin'],a:2},
+
+// NEW questions
+{c:'NEW',q:'B787-9 Nose Gear ~ Main Gear 거리와 Cockpit Seat ~ Nose Gear 거리 맞는 것은?',o:['25.7m, 2.6m','25.8m, 2.7m','25.8m, 2.6m','25.7m, 2.7m'],a:2},
+{c:'NEW',q:'Towing Battery Charge Lights 설명 중 맞는 것은?',o:['HIGH – a minimum of 50 minutes remains before battery charge is depleted','MEDIUM – a minimum of 30 minutes remains before battery charge is depleted','LOW – a minimum of 10 minutes remains before battery charge is depleted','NEED – a minimum of 5 minutes remains before battery charge is depleted'],a:2},
+];
   document.getElementById('badge').textContent=q.c;
   document.getElementById('meta').textContent='문제 '+(idx+1)+' / '+queue.length;
   document.getElementById('qt').textContent=q.q;

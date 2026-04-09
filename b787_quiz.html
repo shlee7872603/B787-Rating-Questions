@@ -311,6 +311,21 @@ const Q=[
 {c:'FLIGHT INSTRUMENTS',q:'NPS Deviation Pointer 설명 중 옳은 것은?',o:['The Deviation Pointer is displayed on the vertical deviation scale in both the climb and descent phase of flight','The Deviation Pointer is displayed on the lateral deviation scale whenever the scale is displayed','The Deviation Pointer is a filled magenta triangle when parked at deflection limit','The Deviation Pointer flashes for five seconds if pointer migrates into bar area'],a:1},
 {c:'FLIGHT INSTRUMENTS',q:'PFD Flap Maneuvering Speeds는 대략 어느 고도에서 displayed되지 않는가?',o:['Above approximately 10,000 feet altitude','Above approximately 14,000 feet altitude','Above approximately 20,000 feet altitude','Below approximately 20,000 feet altitude'],a:2},
 {c:'FLIGHT INSTRUMENTS',q:'ND에 displayed되는 Position trend vector (white, dashed line) 설명이 잘못된 것은?',o:['Predicts position at the end of 30, 60, and 90 second intervals','Each segment represents 20 seconds','Based on bank angle and groundspeed','Selected range determines the number of segments displayed'],a:1}
+// ── NEW / VARIANT QUESTIONS from 2025.4.19 PDF ──
+{c:'FUEL',q:'각 Fuel tank Capacities가 바르게 연결된 것은? (variant)',o:['Left main tank – 36,948 Pounds','Right main tank – 36,974 Pounds','Center tank – 149,684 Pounds','Total – 223,646 Pounds'],a:1},
+{c:'LIGHTING',q:'STORM light switch를 on 하였을 경우 영향을 받지 않는 Light는 무엇인가?',o:['All illuminated indicator lights','Glareshield flood lights','After dome lights','Aisle stand flood lights'],a:1},
+{c:'MASTER WARNING',q:'항공기가 지상에서 Takeoff configuration warning function이 Arm되는 시기는? (variant)',o:['Both engine thrust is in takeoff range','Either fuel control switches are in Run position','Thrust reversers are locked','Airspeed is less than V1'],a:1},
+{c:'MASTER WARNING',q:'다음 airspeed alert 설명 중 틀린 것은? (variant)',o:['Takeoff V1 Airspeed – VEE ONE sounds before reaches V1 during takeoff','TAMS – displayed on the speed tape for maximum control speed with large thrust asymmetry','AIRSPEED LOW is displayed in amber when airspeed is below minimum maneuvering speed','OVERSPEED cannot be canceled by pushing Master WARNING/CAUTION Reset switch'],a:1},
+{c:'POWER PLANT / APU',q:'B787 GEnx-1B74/75 Engine 설명 중 맞는 것은? (variant)',o:['Chevron Shape Nacelle이 장착되어 Engine 소음이 전혀 없다','EDTO는 120분까지 FAA에서 인가 받았다','Takeoff thrust는 각각 74,200 pounds이다','Engine Bleed Air를 전혀 사용하지 않아 연료를 절감되었다'],a:3},
+{c:'POWER PLANT / APU',q:'Secondary engine indication이 시현되는 경우는? (variant)',o:['Lower display가 처음으로 전원을 공급 받을 때','Secondary Engine Parameter 중 Exceedance가 발생될 때','Fuel control SW RUN일 때','N1이 IDLE 밑으로 떨어질 때'],a:1},
+{c:'HYDRAULIC',q:'Center hydraulic system isolation functionality. 관련 내용 중 잘못된 것은? (variant)',o:['The isolation function uses a NGIV, RSIV, AEIV and a reservoir standpipe','The hydraulic isolation systems ensure the flight crew can lower the landing gear and nose wheel steering is operational','The isolation valves cannot be controlled by the crew','Reservoir가 있어서 landing gear down, landing roll, taxi가 가능함'],a:3},
+{c:'HYDRAULIC',q:'Hydraulic system에 대한 설명 중 틀린 것은? (variant)',o:['The airplane has two independent 5000psi hydraulic systems','Flight control system components are distributed so that any one hydraulic system can provide adequate airplane controllability','Hydraulic fluid is supplied to each hydraulic pump from the associated system reservoir','The reservoirs are pressurized by pump outlet pressure'],a:0},
+{c:'FLIGHT CONTROL',q:'STAB GREENBAND EICAS Message level 종류는?',o:['Warning','Caution','Memo','Advisory'],a:3},
+{c:'FLIGHT CONTROL',q:'Expanded Flap and Slat Position Indications에 대한 설명 중 맞는 것은?',o:['The slat indication fills up (forward) for Retraction','The flap indication fills down (aft) for extension','Indication colors AMBER when operating in secondary mode','Indication colors RED when the respective FLAPS DRIVE or SLATS DRIVE EICAS caution message is displayed'],a:1},
+{c:'PRESSURIZATION',q:'LDG ALT Selector를 Pull ON, then rotate할 경우에 대한 설명으로 틀린 것은? (variant)',o:['Sets landing altitude manually','Landing altitude followed by MAN displayed on PFD','When turned slowly, landing altitude display changes in 100 foot increments','When turned quickly, display changes in 500 foot increments'],a:1},
+{c:'PRESSURIZATION',q:'Pressurization System Automatic Operation 설명 중 틀린 것은? (variant)',o:['For takeoff, the system supplies a small positive pressurization prior to rotation to cause a smooth cabin altitude transition','In climb mode, cabin altitude increases on a schedule related to the airplane climb rate and flight plan cruise altitude','During descent, cabin altitude decreases to slightly above the FMC planned landing altitude','At touchdown, both outflow valves open to depressurize the cabin'],a:2},
+{c:'NEW',q:'B787-9 Nose Gear ~ Main Gear 거리와 Cockpit Seat ~ Nose Gear 거리 맞는 것은?',o:['25.7m, 2.6m','25.8m, 2.7m','25.8m, 2.6m','25.7m, 2.7m'],a:2},
+{c:'NEW',q:'Towing Battery Charge Lights 설명 중 맞는 것은?',o:['HIGH – a minimum of 50 minutes remains before battery charge is depleted','MEDIUM – a minimum of 30 minutes remains before battery charge is depleted','LOW – a minimum of 10 minutes remains before battery charge is depleted','NEED – a minimum of 5 minutes remains before battery charge is depleted'],a:2},
 ];
 
 const cats=[...new Set(Q.map(q=>q.c))];
@@ -375,39 +390,7 @@ let shuffledOpts=[];
 function render(){
   if(idx>=queue.length){showResult();return;}
   answered=false;
-  const q=queue[idx
-// ── NEW / VARIANT QUESTIONS from 2025.4.19 PDF ──
-
-// FUEL variant
-{c:'FUEL',q:'각 Fuel tank Capacities가 바르게 연결된 것은? (variant)',o:['Left main tank – 36,948 Pounds','Right main tank – 36,974 Pounds','Center tank – 149,684 Pounds','Total – 223,646 Pounds'],a:1},
-
-// LIGHTING - STORM light 영향 받지 않는 것
-{c:'LIGHTING',q:'STORM light switch를 on 하였을 경우 영향을 받지 않는 Light는 무엇인가?',o:['All illuminated indicator lights','Glareshield flood lights','After dome lights','Aisle stand flood lights'],a:1},
-
-// MASTER WARNING variants
-{c:'MASTER WARNING',q:'항공기가 지상에서 Takeoff configuration warning function이 Arm되는 시기는? (variant)',o:['Both engine thrust is in takeoff range','Either fuel control switches are in Run position','Thrust reversers are locked','Airspeed is less than V1'],a:1},
-{c:'MASTER WARNING',q:'다음 airspeed alert 설명 중 틀린 것은? (variant)',o:['Takeoff V1 Airspeed – The voice annunciation VEE ONE sounds before reaches V1 during takeoff','Thrust Asymmetry Minimum Speed (TAMS) – is displayed on the speed tape to provide pilots with situational awareness of the maximum control speed for operation with a large thrust asymmetry','AIRSPEED LOW is displayed and the box around the current airspeed indication on the PFD is highlighted amber when airspeed is below minimum maneuvering speed','OVERSPEED is displayed if airspeed is greater than VMO/MMO. The message cannot be canceled by pushing Master WARNING/CAUTION Reset switch'],a:1},
-
-// POWER PLANT variants
-{c:'POWER PLANT / APU',q:'B787 GEnx-1B74/75 Engine 설명 중 맞는 것은? (variant)',o:['Chevron Shape Nacelle이 장착되어 Engine 소음이 전혀 없다','EDTO는 120분까지 FAA에서 인가 받았다','Takeoff thrust는 각각 74,200 pounds이다','Engine Bleed Air를 전혀 사용하지 않아 연료를 절감되었다'],a:3},
-{c:'POWER PLANT / APU',q:'Secondary engine indication이 시현되는 경우는? (variant)',o:['Lower display가 처음으로 전원을 공급 받을 때','Secondary Engine Parameter 중 Exceedance가 발생될 때','Fuel control SW "RUN"일 때','N1이 IDLE 밑으로 떨어질 때'],a:1},
-
-// HYDRAULIC variants
-{c:'HYDRAULIC',q:'Center hydraulic system isolation functionality. 관련 내용 중 잘못된 것은? (variant)',o:['The isolation function uses a NGIV, RSIV, AEIV and a reservoir standpipe','The hydraulic isolation systems ensure the flight crew can lower the landing gear and nose wheel steering is operational','The isolation valves cannot be controlled by the crew','Reservoir가 있어서 landing gear down, landing roll, taxi가 가능함'],a:3},
-{c:'HYDRAULIC',q:'Hydraulic system에 대한 설명 중 틀린 것은? (variant)',o:['The airplane has two independent 5000psi hydraulic systems','Flight control system components are distributed so that any one hydraulic system can provide adequate airplane controllability','Hydraulic fluid is supplied to each hydraulic pump from the associated system reservoir','The reservoirs are pressurized by pump outlet pressure'],a:0},
-
-// FLIGHT CONTROL new & variants
-{c:'FLIGHT CONTROL',q:'STAB GREENBAND EICAS Message level 종류는?',o:['Warning','Caution','Memo','Advisory'],a:3},
-{c:'FLIGHT CONTROL',q:'Expanded Flap and Slat Position Indications에 대한 설명 중 맞는 것은?',o:['The slat indication fills up (forward) for Retraction','The flap indication fills down (aft) for extension','Indication colors of outline and fill is AMBER when operating in secondary mode','Indication colors of outline and fill is RED when the respective FLAPS DRIVE or SLATS DRIVE EICAS caution message is displayed'],a:1},
-
-// PRESSURIZATION variants
-{c:'PRESSURIZATION',q:'LDG ALT Selector를 Pull ON, then rotate할 경우에 대한 설명으로 틀린 것은? (variant)',o:['Sets landing altitude manually','Landing altitude followed by MAN displayed on PFD','When turned slowly, landing altitude display changes in 100 foot increments','When turned quickly, display changes in 500 foot increments'],a:1},
-{c:'PRESSURIZATION',q:'Pressurization System Automatic Operation 설명 중 틀린 것은? (variant)',o:['For takeoff, the system supplies a small positive pressurization prior to rotation to cause a smooth cabin altitude transition to the cabin altitude climb schedule','In climb mode, cabin altitude increases on a schedule related to the airplane climb rate and flight plan cruise altitude','During descent, cabin altitude decreases to slightly above the FMC planned landing altitude','At touchdown, both outflow valves open to depressurize the cabin'],a:2},
-
-// NEW questions
-{c:'NEW',q:'B787-9 Nose Gear ~ Main Gear 거리와 Cockpit Seat ~ Nose Gear 거리 맞는 것은?',o:['25.7m, 2.6m','25.8m, 2.7m','25.8m, 2.6m','25.7m, 2.7m'],a:2},
-{c:'NEW',q:'Towing Battery Charge Lights 설명 중 맞는 것은?',o:['HIGH – a minimum of 50 minutes remains before battery charge is depleted','MEDIUM – a minimum of 30 minutes remains before battery charge is depleted','LOW – a minimum of 10 minutes remains before battery charge is depleted','NEED – a minimum of 5 minutes remains before battery charge is depleted'],a:2},
-];
+  const q=queue[idx];
   document.getElementById('badge').textContent=q.c;
   document.getElementById('meta').textContent='문제 '+(idx+1)+' / '+queue.length;
   document.getElementById('qt').textContent=q.q;

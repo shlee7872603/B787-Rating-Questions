@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>B787 레이팅 퀴즈</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=JetBrains+Mono:wght@600&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans KR',sans-serif;background:#0d1117;color:#e6edf3;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:20px}
+header{width:100%;max-width:760px;display:flex;justify-content:space-between;align-items:center;padding:14px 0 20px;border-bottom:1px solid #30363d;margin-bottom:24px}
+h1{font-size:1.1rem;font-weight:700;display:flex;align-items:center;gap:8px}
+.tag{background:#2f81f7;color:#fff;font-size:.65rem;font-weight:700;padding:2px 7px;border-radius:4px}
+.sb{font-family:'JetBrains Mono',monospace;font-size:.82rem;color:#8b949e;display:flex;gap:14px}
+.sb b{color:#e6edf3}
+.wrap{width:100%;max-width:760px}
+.prog{height:3px;background:#30363d;border-radius:2px;margin-bottom:26px}
+.pf{height:100%;background:#2f81f7;border-radius:2px;transition:width .4s}
+.badge{display:inline-block;font-size:.7rem;font-weight:700;color:#2f81f7;background:rgba(47,129,247,.12);border:1px solid rgba(47,129,247,.3);padding:3px 10px;border-radius:20px;margin-bottom:8px}
+.meta{font-size:.75rem;color:#8b949e;font-family:'JetBrains Mono',monospace;margin-bottom:6px}
+.card{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:24px 26px;margin-bottom:14px}
+.qt{font-size:.97rem;line-height:1.8;font-weight:500;white-space:pre-wrap}
+.opts{display:flex;flex-direction:column;gap:9px;margin-bottom:16px}
+.opt{display:flex;align-items:flex-start;gap:11px;background:#21262d;border:1px solid #30363d;border-radius:10px;padding:13px 16px;cursor:pointer;text-align:left;color:#e6edf3;font-family:'Noto Sans KR',sans-serif;font-size:.9rem;line-height:1.6;transition:border-color .15s,background .15s;width:100%}
+.opt:hover:not(:disabled){border-color:#2f81f7;background:rgba(47,129,247,.07)}
+.opt:disabled{cursor:default}
+.lbl{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.83rem;color:#8b949e;min-width:18px;flex-shrink:0;padding-top:2px}
+.opt.ok{border-color:#3fb950;background:rgba(63,185,80,.1)}.opt.ok .lbl{color:#3fb950}
+.opt.ng{border-color:#f85149;background:rgba(248,81,73,.08)}.opt.ng .lbl{color:#f85149}
+.fb{border-radius:10px;padding:12px 16px;margin-bottom:14px;font-size:.88rem;font-weight:500;display:none}
+.fb.show{display:block}
+.fb.ok{background:rgba(63,185,80,.1);border:1px solid rgba(63,185,80,.35);color:#3fb950}
+.fb.ng{background:rgba(248,81,73,.08);border:1px solid rgba(248,81,73,.3);color:#f85149}
+.ans{color:#3fb950;font-weight:700}
+.acts{display:flex;gap:9px}
+.btn{padding:10px 20px;border-radius:10px;border:none;cursor:pointer;font-family:'Noto Sans KR',sans-serif;font-size:.88rem;font-weight:700;transition:opacity .15s}
+.btnp{background:#2f81f7;color:#fff;flex:1}.btnp:hover{opacity:.88}
+.btns{background:#21262d;color:#8b949e;border:1px solid #30363d}.btns:hover{color:#e6edf3}
+.setup{width:100%;max-width:760px}
+.stitle{font-size:1.5rem;font-weight:700;margin-bottom:6px}
+.ssub{color:#8b949e;font-size:.88rem;margin-bottom:26px}
+.seclbl{font-size:.75rem;font-weight:700;color:#8b949e;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px}
+.catrow{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:24px}
+.catb{font-size:.7rem;font-weight:700;padding:4px 11px;border-radius:20px;border:1px solid #30363d;background:#21262d;color:#8b949e;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:all .15s}
+.catb.on{border-color:#2f81f7;background:rgba(47,129,247,.15);color:#2f81f7}
+.cntrow{display:flex;gap:9px;margin-bottom:26px;flex-wrap:wrap}
+.cntb{padding:7px 18px;border-radius:10px;border:1px solid #30363d;background:#21262d;color:#8b949e;cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:.88rem;font-weight:700;transition:all .15s}
+.cntb.on{border-color:#2f81f7;background:rgba(47,129,247,.15);color:#2f81f7}
+.startb{background:#2f81f7;color:#fff;border:none;border-radius:10px;padding:13px;font-family:'Noto Sans KR',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;width:100%;transition:opacity .15s}
+.startb:hover{opacity:.88}
+.result{display:none;text-align:center;padding:40px 10px}
+.result.show{display:block}
+.bigpct{font-size:4rem;font-weight:700;font-family:'JetBrains Mono',monospace}
+.rlbl{color:#8b949e;font-size:.9rem;margin-bottom:20px}
+.grade{font-size:1.25rem;font-weight:700;margin-bottom:26px}
+.rstats{display:flex;justify-content:center;gap:32px;margin-bottom:32px}
+.stat{display:flex;flex-direction:column;align-items:center;gap:3px}
+.sn{font-size:1.8rem;font-weight:700;font-family:'JetBrains Mono',monospace}
+.sl{font-size:.73rem;color:#8b949e}
+.hide{display:none!important}
+</style>
+</head>
+<body>
+<header>
+  <h1>✈ B787 레이팅 퀴즈 <span class="tag">201Q</span></h1>
+  <div class="sb">맞음 <b id="sc">0</b> | 틀림 <b id="sw">0</b> | 남음 <b id="sl">-</b></div>
+</header>
+
+<div class="setup" id="setupScr">
+  <div class="stitle">문제 설정</div>
+  <div class="ssub">챕터와 문제 수를 선택하고 시작하세요</div>
+  <div class="seclbl">챕터 선택</div>
+  <div class="catrow" id="catRow"></div>
+  <div class="seclbl">문제 수</div>
+  <div class="cntrow">
+    <button class="cntb on" data-n="10">10</button>
+    <button class="cntb" data-n="20">20</button>
+    <button class="cntb" data-n="50">50</button>
+    <button class="cntb" data-n="100">100</button>
+    <button class="cntb" data-n="9999">전체</button>
+  </div>
+  <button class="startb" id="startBtn">퀴즈 시작 →</button>
+</div>
+
+<div class="wrap hide" id="quizScr">
+  <div class="prog"><div class="pf" id="pf"></div></div>
+  <div class="badge" id="badge"></div>
+  <div class="meta" id="meta"></div>
+  <div class="card"><div class="qt" id="qt"></div></div>
+  <div class="opts" id="opts"></div>
+  <div class="fb" id="fb"></div>
+  <div class="acts">
+    <button class="btn btns" onclick="resetToSetup()">← 설정</button>
+    <button class="btn btnp hide" id="nextBtn" onclick="nextQ()">다음 문제 →</button>
+  </div>
+</div>
+
+<div class="wrap result" id="resultScr">
+  <div class="bigpct" id="rpct"></div>
+  <div class="rlbl">정답률</div>
+  <div class="grade" id="rgrade"></div>
+  <div class="rstats">
+    <div class="stat"><div class="sn" id="rc" style="color:#3fb950">0</div><div class="sl">정답</div></div>
+    <div class="stat"><div class="sn" id="rw" style="color:#f85149">0</div><div class="sl">오답</div></div>
+    <div class="stat"><div class="sn" id="rt">0</div><div class="sl">총문제</div></div>
+  </div>
+  <button class="btn btnp" style="max-width:220px;margin:0 auto;display:block" onclick="resetToSetup()">다시 시작</button>
+</div>
+
+<script>
+const L=['가','나','다','라'];
+const Q=[
+{c:'ELECTRICAL',q:'배터리 전원이 CCS Start-UP에 사용할 수 있는 유일한 전원인 경우, Left CCR이 Online 상태임을 나타내는 것은?',o:['The lower DU shows the default format','All displays and the HUD combiner show their default formats','The captains inboard and lower display units show the default formats (CDU pages)','The first officers inboard and outboard units show the default formats (CDU pages)'],a:2},
+{c:'ELECTRICAL',q:'235VAC 시스템에 전원이 공급될 때 28VDC 시스템에 전원을 공급하는 것은?',o:['Four DC generators','Two standby inverters','Auto Transformer Units (ATUs)','Power conversion devices'],a:2},
+{c:'ELECTRICAL',q:'Electric load shedding을 받는 항공기 시스템 목록이 시현되는 곳은?',o:['The electrical synoptic','Individual EICAS Messages panel','The ECL Non Normal Checklist','Individual equipment synoptic'],a:0},
+{c:'ELECTRICAL',q:'Engine이 running 또는 forward external power가 On 선택 시, 어느 APU starter/generator가 Engine 시동에 사용되는가?',o:['Either the left or right starter generator','Both APU starter/generators','The right starter/generator','The left starter/generator'],a:3},
+{c:'ELECTRICAL',q:'Main 235VAC BUS Distribution System의 주요 목적은?',o:['Provide power to the large motor controllers in the after E/E Bay','Provide power to the flight instrument','Provide power to the four electrical brake power supply units','Distribute power directly to a limited number of high voltage AC airplane systems'],a:3},
+{c:'ELECTRICAL',q:'전원이 없는 항공기에서 Battery switch On 후 APU 시동 시, APU controller는 시동 전에 무엇을 기다리는가?',o:['The battery voltage of the main battery','APU inlet door position','That the common core system (CCS) applications are available','Fuel pressure from the right fuel manifold'],a:2},
+{c:'ELECTRICAL',q:'Electric Power가 공급받는 전압 중 틀린 것은?',o:['Engine Generator: AC 235V','APU Generator: AC 115V','External Power: AC 115V','Ram Air Turbine: AC 235V'],a:1},
+{c:'ELECTRICAL',q:'Electric Bus 설명 중 맞는 것은?',o:['Remote Power Distribution Unit은 10A 이상의 Load들에게 전력을 공급한다','Brake Power의 Main Source는 AC 130V이다','Forward 및 Aft External Power는 AC 235V Bus에 Electrical Power를 제공한다','APU Generator와 External Power는 동시에 항공기에 공급될 수 있다'],a:2},
+{c:'ELECTRICAL',q:'Electric Synoptic 화면 설명 중 틀린 것은?',o:['Main 및 APU Battery 상태는 Status Page에서만 확인 가능하다','Engine당 2개의 Starter 모두 결함이 있으면 STARTERS Amber 문구가 나타난다','APU Start 시 Synoptic 상 확인이 가능하다','Load Shedding System List들을 확인할 수 있다'],a:0},
+{c:'ELECTRICAL',q:'CBIC(Circuit Breaker Indications and Control) 설명 중 틀린 것은?',o:['Circuit Breaker는 Electric과 Thermal Type이 있다','Electric Circuit Breaker는 상태 확인 및 제어가 가능하다','Thermal Circuit Breaker는 제어가 가능하다','검색 기능을 사용하여 특정 Circuit Breaker를 찾을 수 있다'],a:2},
+{c:'ELECTRICAL',q:'VFSG(Variable Frequency Starter Generator) 설명 중 틀린 것은?',o:['상황에 따라 Engine VFSG는 Starter와 Generator 기능을 모두 수행할 수 있다','APU Generator는 Starter와 분리되어 독립적 기능을 가진다','APU에는 2개의 VFSG가 있다','APU Battery로 APU Start 시 Right APU VFSG가 사용된다'],a:1},
+{c:'ELECTRICAL',q:'ELEC GEN OFF L1, L2, R1, R2 Advisory message가 시현되는 시기는?',o:['The generator control breaker is open','The generator control breaker is close','The generator control valve is open','The generator control valve is close'],a:0},
+{c:'ELECTRICAL',q:'Towing power switch가 On 위치에 있을 때 energized 되는 것은?',o:['Main batteries energize only the equipment essential for towing operations','The main and APU batteries energize only the equipment essential for towing operations','APU batteries energize only the equipment essential for towing operations','Stand-by batteries energize only the equipment essential for towing operations'],a:1},
+{c:'ELECTRICAL',q:'B787 항공기 Electrical power source의 종류 중 맞는 것은?',o:['Three variable frequency engine starter/generators','Two variable frequency APU starter/generators','Two APU battery','Two external AC power receptacles'],a:1},
+{c:'ELECTRICAL',q:'지상에서 Towing power mode Active 시 Navigation light에 전원을 공급하는 곳은?',o:['Main battery','Stand by battery','APU battery','APU battery와 Stand by battery'],a:2},
+{c:'FIRE PROTECTION',q:'Engine fire and overheat detection system 설명 중 맞는 것은?',o:['Both loops must detect a fire or overheat condition to cause an engine fire warning or overheat caution','There are multiple dual channel detector assemblies in each engine nacelle. Each detector channel provides both fire and overheat detection','There are two detector loops in each engine nacelle. Each detector loop provides both fire and overheat detection','If a fault is detected in one loop, no further fire or overheat protection is provided'],a:2},
+{c:'FIRE PROTECTION',q:'APU fire extinguishing system 설명 중 맞는 것은?',o:['There are two APU fire extinguisher bottles; rotating the switch in either direction discharges one bottle','In normal operation on the ground with both engines off, an APU overheat signal causes automatic shutdown','After discharge of the first bottle, rotating the APU fire switch in the opposite direction discharges the second bottle','On the ground with both engines off, an APU fire signal from either loop causes APU shutdown and bottle discharge'],a:3},
+{c:'FIRE PROTECTION',q:'Forward cargo compartment에는 몇 개의 Smoke detector가 장착되어 있는가?',o:['17개','18개','19개','20개'],a:1},
+{c:'FIRE PROTECTION',q:'FIRE TEST PASS warning message가 시현되는 시기는?',o:['Manually initiated test of the fire/overheat detection system has been started','Automatically initiated test of the fire/overheat detection system has been completed','Automatically initiated test of the fire/overheat detection system has been started','A manually initiated test of the fire/overheat detection system has been completed'],a:3},
+{c:'FIRE PROTECTION',q:'Bulk cargo compartment에는 몇 개의 Smoke detector가 장착되어 있는가?',o:['2개','3개','4개','5개'],a:0},
+{c:'FIRE PROTECTION',q:'다음 중 Engine Fire Switches가 자동으로 unlock되는 경우는?',o:['They must be manually unlocked','When the AUTOSTART switch is on','On the ground, anytime the APU is running','For a fire warning, or when the FUEL CONTROL switch is in CUTOFF'],a:3},
+{c:'FIRE PROTECTION',q:'Cargo compartment에는 몇 개의 Fire extinguisher bottle이 장착되어 있는가?',o:['3개','4개','5개','6개'],a:3},
+{c:'FIRE PROTECTION',q:'Wheel well fire 설명 중 틀린 것은?',o:['The main wheel well has fire and overheat detection','The main wheel well has fire extinguishing system','The nose wheel well does not have fire extinguishing system','The nose wheel well does not have a fire or overheat detection system'],a:1},
+{c:'FIRE PROTECTION',q:'APU fire detection 설명 중 맞는 것은?',o:['The APU compartment has single fire detector loops','There are APU overheat and fire detection','Normally, one loop detects a fire to produce a fire warning','An APU fire warning automatically shuts down the APU'],a:3},
+{c:'FIRE PROTECTION',q:'Engine fire and overheat detection 설명 중 틀린 것은?',o:['There are multiple dual-channel detector assemblies in each engine nacelle','Normally, dual elements on each channel must detect a fire or overheat condition','If a fault is detected in one channel, the remaining channel element automatically switches to single channel operation','The EICAS advisory message DET FIRE ENG (L or R) is displayed if the engine fire detection system fails'],a:2},
+{c:'FIRE PROTECTION',q:'Engine overheat indication이 아닌 것은?',o:['The engine FUEL CONTROL (L or R) switch fire light illuminates','The caution beeper sounds','The master CAUTION lights illuminate','The EICAS caution message OVERHEAT ENG (L or R) is displayed'],a:0},
+{c:'FIRE PROTECTION',q:'Engine에 장착된 Fire extinguisher bottle은 몇 개인가?',o:['2 for each engine (total 4)','2 for all engine (total 2)','1 for each engine (total 2)','4 for all engine (total 4)'],a:0},
+{c:'FIRE PROTECTION',q:'Cargo compartment fire extinguishing 설명 중 틀린 것은?',o:['In flight, pushing the CARGO FIRE DISCHARGE switch also activates the extinguishing system','On the ground, three extinguisher bottles discharge simultaneously, with the third bottle at a reduced flow rate','In flight, a fire warning causes immediate discharge of two bottles. After 15 min, the remaining four bottles discharge at reduced flow rate','The EICAS advisory message BOTTLE DISCH CARGO is displayed after all bottles are discharged'],a:2},
+{c:'FIRE PROTECTION',q:'Lavatory fire detection 설명 중 틀린 것은?',o:['If smoke is detected, an aural alert sounds in the lavatory and in the cabin','The EICAS warning message FIRE-SMOKE LAVATORY is displayed','The lavatory call light flashes and the master call light at the associated attendant station illuminates','Each lavatory has a single smoke detector'],a:3},
+{c:'FUEL',q:'Center tank fuel pumps가 Main tank pumps보다 Higher output pressure를 갖는 이유는?',o:['The fuel must be lifted vertically to the engines','To move fuel a greater distance to the engines','To use center tank fuel before wing tank fuel','To jettison fuel if necessary'],a:2},
+{c:'FUEL',q:'모든 Fuel pump를 작동시키기에 충분한 Power가 없을 때 올바른 설명은?',o:['The fuel system automatically determines the best pumps to operate depending on how much electrical power is available','When insufficient power, the DC fuel pump is the first to be load shed','Pumps are inhibited on the ground by programming until the flaps are extended','The center tank pumps are load shed first'],a:0},
+{c:'FUEL',q:'운항승무원은 비행 중 Manual cross feed를 이용하여 어떻게 balance fuel을 실시하는가?',o:['By turning off the fuel pump switches','By pushing the fuel balance switch and turning off fuel pump switches on the tank with the lower quantity','By opening the cross feed valve and turning off fuel pumps on the main tank with the lower quantity','Access fuel in the center tank'],a:2},
+{c:'FUEL',q:'B787 Fuel System의 특징 중 맞는 것은?',o:['Fuel Balance switch가 있어 쉽게 fuel Balancing이 가능하다','Nitrogen generation system이 장착되어 Fuel tank 내 산소농도를 높인다','Maximum allowable overfill은 1,000lbs다','APU AC pump가 있어 외부 전원이 없어도 APU는 동작 가능하다'],a:0},
+{c:'FUEL',q:'각 Fuel tank Capacities가 바르게 연결된 것은?',o:['Left main tank - 36,984 Pounds','Left main tank - 36,974 Pounds','Center tank - 149,684 Pounds','Surge tank - 12,784 Pounds'],a:1},
+{c:'FUEL',q:'Fuel quantity에 대한 설명 중 맞는 것은?',o:['각 Tank에 장착된 Sensor에서 측정한다','Total fuel quantity는 Third EICAS에 시현된다','Total fuel quantity는 Fuel synoptic에는 시현되지 않는다','정상 상황에서도 Fuel synoptic에는 Expended fuel indication이 시현된다'],a:3},
+{c:'FUEL',q:'Nitrogen generation system 설명 중 맞는 것은?',o:['Forward cargo air에서 산소만 분리하여 화물의 화재 위험을 낮춘다','분리된 질소와 물은 다시 기내로 공급하여 쾌적함을 제공한다','고도와 상관없이 15%의 산소 농도를 Fuel tank 내 유지시킨다','공기 내 질소를 분리 후 Fuel tank에 공급하여 Fuel vapor로 인한 화재 위험을 최소화한다'],a:3},
+{c:'FUEL',q:'FUEL DISAGREE Advisory message는 어느 경우에 시현되는가?',o:['Center tank와 Main tank의 연료 차이가 발생되었을 경우','Center tank와 Main tank의 연료 차이가 1,500lbs 이상일 경우','Totalizer와 Calculated의 연료 차이가 발생되었을 경우','Totalizer와 Calculated의 연료 차이가 1,500lbs 이상일 경우'],a:3},
+{c:'FUEL',q:'Fuel temperature 설명 중 맞는 것은?',o:['Fuel temperature is displayed on the secondary EICAS display','The temperature is normally displayed in amber','During jettison, the TO REMAIN quantity replaces the EICAS display fuel temperature indications only','Fuel temperature and minimum fuel temperature are also displayed on the fuel synoptic display'],a:3},
+{c:'FUEL',q:'Fuel pump operation 설명 중 맞는 것은?',o:['Regardless of main tank pump switch positions, a scavenge system automatically transfers remaining center tank fuel to main tanks','Fuel transfer by scavenge system begins when either main tank quantity is less than approximately 35,000 pounds and center tank pumps are off','The FUEL IN CENTER message means unusable fuel is in center tank','FUEL PUMP CENTER (L or R) displays when any center pump switch on is required'],a:1},
+{c:'FUEL',q:'Fuel balance operation이 inhibit되는 조건이 아닌 것은?',o:['Prior to engine start and the APU is off','A center tank pump is on','In flight and the fuel jettison system is active','On the ground and both engines are shutdown'],a:1},
+{c:'FUEL',q:'Fuel balance가 자동으로 꺼지는 조건이 아닌 것은?',o:['Jettison system is active','Fuel is balanced','FUEL IN CENTER message is displayed','Airplane is on ground and either engine running'],a:3},
+{c:'FUEL',q:'Fuel jettison 설명 중 맞는 것은?',o:['The nozzles cannot open on the ground, regardless of switch positions','The fuel jettison system allows jettison from center fuel tank only','When the FUEL TO REMAIN quantity is reached, the crew must turn off nozzle L and R to stop jettison','There is no automatic system to set the fuel to remain'],a:0},
+{c:'FUEL',q:'Fuel jettison 설명 중 틀린 것은?',o:['Do not jettison at flap 30','Nozzle VALVE Lights Illuminated (amber) - the jettison nozzle valve is not in the selected position','FUEL TO REMAIN Selector PULL ON - changes the mode from maximum landing weight to manual','Jettison nozzle valve selected on opens center tank jettison isolation valves, not main tank valves'],a:3},
+{c:'FLIGHT MANAGEMENT',q:'FMS CDU의 Line selector key를 선택하였을 경우 나타나는 현상이 아닌 것은?',o:['Displayed emergency frequency on the scratchpad','Moves data from scratchpad to selected line','Selects page, procedure, or performance mode as applicable','Deletes data from selected line when DELETE displays in scratchpad'],a:0},
+{c:'FLIGHT MANAGEMENT',q:'CDU help window에 NAV DATA OUT OF DATE가 시현되었다면 이 Message의 의미는?',o:['The correct database has been selected on the IDENT page','The current date not in data base range - select new data base on ident page','LNAV has been selected and a route has not been activated','FMC performance prediction are not available'],a:1},
+{c:'FLIGHT MANAGEMENT',q:'Advisory message인 NAV IRU 시현의 의미는?',o:['Both IRUs are inoperative','The IRU is only providing pitch and roll guidance','The IRS cannot supply correct attitude, position, track, and groundspeed data','Any two or more of the IRUs or AHRUs are in the alignment mode'],a:3},
+{c:'FLIGHT MANAGEMENT',q:'FMC와 CDUs에 대한 설명 중 맞는 것은?',o:['The flight crew controls the FMC using emulated CDU displays','At power up, both FMCs are used to accomplish the flight management tasks','CDUs are only displayed on the lower DU','There are two independent FMCs'],a:0},
+{c:'FLIGHT MANAGEMENT',q:'ALTN NAV RADIO page에 관한 설명 중 맞는 것은?',o:['When alternate navigation is selected ON, it is possible to have the left and right ILS or GLS tuned to different frequencies/channels','Pushing the CTRT select switch to on allows an ILS frequency or GLS channel to be tuned into the left or right INR','Pushing the CTRT select switch to off causes ILS-GLS and course to change color from white to cyan','When the desired ILS frequency is entered, the inbound course is set automatically'],a:0},
+{c:'FLIGHT MANAGEMENT',q:'Progress 2 page에서 확인할 수 있는 항목은?',o:['Step climb altitude','Total distance until destination airport','Static air temperature','Ground speed'],a:0},
+{c:'FLIGHT MANAGEMENT',q:'FMS에 Longitude와 latitude로 입력 시 CDU Display에 나타나는 상태 중 맞는 것은?',o:['N50 W040 becomes 50N40','N50 E020 becomes 5020E','S07 W120 becomes 0720W','S06 E110 becomes 06E10'],a:0},
+{c:'FLIGHT MANAGEMENT',q:'기장과 부기장의 Display가 같은 ILS 또는 GLS source가 사용되었을 경우 시현되는 Message는?',o:['SAME SOURCE APPROACH - Advisory','SGL SOURCE APPROACH - Advisory','SAME SOURCE APPROACH - Caution','SGL SOURCE APPROACH - Caution'],a:1},
+{c:'FLIGHT MANAGEMENT',q:'ND에 GRID heading이 시현되는 시기는?',o:['North of 80N or south of 80S','North of 75N or south of 75S','North of 70N or south of 70S','North of 65N or south of 65S'],a:0},
+{c:'GENERAL / DOORS',q:'Flight deck access key pad에 정확한 Emergency access code를 입력하였을 경우 나타나는 표시는?',o:['EICAS caution message and illuminates a red light on the keypad','EICAS warning message FD DOOR AUTO UNLOCK and illuminates the amber light on the keypad','EICAS Advisory message and illuminates a green light on the keypad','Sounds a flight deck chime'],a:1},
+{c:'GENERAL / DOORS',q:'OFAR(Overhead Flight Crew Rest) 설명 중 맞는 것은?',o:['OFAR을 탈출할 수 있는 탈출구는 하나뿐이다','비상 장비로 소화기는 준비되어 있지 않다','이착륙 중에도 침대를 사용할 수 있다','Decompression 시 Horn sound가 나며 Green oxygen indicator가 들어온다'],a:3},
+{c:'GENERAL / DOORS',q:'소화기에 대한 설명 중 맞는 것은?',o:['물 소화기는 모든 종류의 화재에 사용 가능하다','Flight deck에서 halon 소화기 사용 시 반드시 산소마스크를 100%로 착용해야 한다','물 소화기의 물은 식용이 가능하다','Halon 소화기는 전기 화재에 사용하면 안된다'],a:1},
+{c:'GENERAL / DOORS',q:'Cockpit에 있는 Flashlight에 대한 설명 중 옳은 것은?',o:['Battery는 충전식이다','Condition light가 red로 깜박이는 것은 충전 중이라는 표시이다','Switch가 없이 거치대에서 분리하면 자동으로 들어온다','평상시 항공기 외부 점검에 사용할 수 있다'],a:2},
+{c:'GENERAL / DOORS',q:'B787 항공기의 Maximum Steering angle은?',o:['60','70','80','90'],a:1},
+{c:'GENERAL / DOORS',q:'Nose gear landing lights가 Illuminate되지 않는 경우는?',o:['Nose landing gear is down','Nose landing gear lever is not down','Nose landing gear is down and locked','Nose landing gear is not down and locked'],a:3},
+{c:'GENERAL / DOORS',q:'Passenger entry door에 정상적인 전원이 공급되지 않는다면, Door window는 어떻게 되는가?',o:['자동으로 Clear된다','자동으로 Dark된다','수동으로 Clear 또는 Dark로 변경할 수 있다','위 모두 맞다'],a:1},
+{c:'GENERAL / DOORS',q:'Cabin entry door가 Automatic mode에 있는 것을 확인하는 방법은?',o:['Door mode selector가 red band 위에 있고, automatic symbolic indicator가 steady하게 켜져 있으며 깜박이지 않는다','Door mode selector가 green band 위에 있고, automatic symbolic indicator가 steady하게 켜져 있으며 깜박이지 않는다','Door mode selector가 red band 위에 있고, automatic symbolic indicator가 깜박이고 있다','Door mode selector가 green band 위에 있고, automatic symbolic indicator가 깜박이고 있다'],a:0},
+{c:'GENERAL / DOORS',q:'완전히 충전된 Emergency lighting battery는 몇 분간 작동하는가?',o:['Above 10 minutes','At least 10 minutes','Below 10 minutes','Exactly 10 minutes'],a:1},
+{c:'GENERAL / DOORS',q:'전기적 화재 발생 시 바른 조치 사항이 아닌 것은?',o:['Remove the power source as soon as possible','Avoid discharging directly on persons due to suffocating effects','Discharge too close to fire as the discharge stream may scatter the fire','Avoid breathing vapors, fumes and heated smoke as much as possible'],a:2},
+{c:'GENERAL / DOORS',q:'Passenger oxygen mask는 어느 고도에 도달하기 전에 자동으로 PSU에서 Drop되는가?',o:['14,000 feet','14,000 feet or 14,500 feet which is first','Origin airfield altitude +1000 feet','Destination airfield altitude +1500 feet'],a:1},
+{c:'GENERAL / DOORS',q:'지상에서 선회 가능한 거리는?',o:['Away from an obstacle within 4.5-4.6 meters of the wing tip','Away from an obstacle within 4.7 meters of the wing tip','Away from an obstacle within 4.9 meters of the wing tip','Away from an obstacle within 5.1 meters of the wing tip'],a:1},
+{c:'GENERAL / DOORS',q:'Smoke detector Color별 현상 중 맞는 것은?',o:['Steady green - smoke detector has power and is operating properly','Blinking green - smoke has been detected','Steady red - detector has failed','Blinking red - maintenance is necessary'],a:0},
+{c:'GENERAL / DOORS',q:'ELT가 Distress signals을 전송하는 주파수가 아닌 것은?',o:['121.5 MHz','243 MHz','325 MHz','406 MHz'],a:2},
+{c:'LIGHTING',q:'STORM light switch를 On하였을 경우 Override하는 Light는?',o:['All illuminated indicator lights','Runway turn off light','After dome light','All taxi light'],a:0},
+{c:'LIGHTING',q:'Master Brightness switch pushed on 상태에서 Outer switch Rotate 시 나타나는 현상은?',o:['Prevents individual brightness control settings from changing','Limits fixed range of individual brightness controls','Adjusts all panel lights and displays (not dome lights, flood lights, area lights, HUD, standby compass, handset, annunciators)','Overrides individual brightness control settings'],a:3},
+{c:'LIGHTING',q:'Nose gear landing lights Switch를 On하였으나 illuminated되지 않는 경우는?',o:['The nose landing gear is not down','The nose landing gear is unlocked','The nose landing gear is not down and locked','The nose landing gear is not down and unlocked'],a:2},
+{c:'LIGHTING',q:'Emergency light switch 위치에 따른 현상 중 맞는 것은?',o:['OFF - prevents emergency lights system operation if airplane electrical power fails or is turned off','ARMED - all emergency lights illuminate automatically if airplane electrical power fails or is turned off','DISARMED - all emergency lights illuminate automatically if airplane electrical power fails or is turned off','ON - Only floor passenger emergency lights illuminate'],a:1},
+{c:'LIGHTING',q:'Exterior light 중 B787 항공기에 장착되지 않은 것은?',o:['Strobe light','Logo light','Runway turn on light','Navigation light'],a:2},
+{c:'LIGHTING',q:'Beacon lights의 Color 및 장착 위치 중 맞는 것은?',o:['Red - On the top of the wing','Red - On the top and bottom of the fuselage','Red - On the top and bottom of the wing','Red - On the bottom of the wing'],a:1},
+{c:'LIGHTING',q:'Seat belt signs switch를 Auto 위치에 두었을 경우 Seat belt sign은 언제 On되는가?',o:['Flap lever at 1-5 or greater','Passenger oxygen off','Aircraft altitude below airline defined','Cabin altitude above 10,000 feet'],a:3},
+{c:'MASTER WARNING',q:'EICAS에 시현된 Warning message를 Cancelled and removed하는 방법은?',o:['Push the CAN/RCL switch','A warning cannot be cancelled','Push the MASTER WARNING switch','Shut down the affected system'],a:2},
+{c:'MASTER WARNING',q:'다음 Alert level 중 Highest priority alert messages를 고르시오.',o:['Advisory message','Caution message','Memo and Status Message','Warning message'],a:3},
+{c:'MASTER WARNING',q:'B787 항공기는 Evacuation horn cutoff button이 없다. Horn cutoff할 수 있는 방법은?',o:['Glare shield Panel의 Master WARNING/CAUTION Reset Switch','AFT Aisle Stand의 AURAL CANCEL button','G/S INHIBIT button','Overhead Panel의 FIRE/OVHT TEST button'],a:1},
+{c:'MASTER WARNING',q:'Time critical warning alert가 아닌 것은?',o:['PULL UP','ENG FAIL','SPEEDBRAKE','GLIDESLOPE'],a:3},
+{c:'MASTER WARNING',q:'EICAS event record switch를 Push하면 몇 개의 Event를 Memory시킬 수 있나?',o:['Up to three','Up to four','Up to five','Up to six'],a:1},
+{c:'MASTER WARNING',q:'Takeoff 시 Crew alerting inhibit 설명 중 맞는 것은?',o:['ENG START 후부터 Status cue는 Inhibit된다','Cabin alert 제외하고 Takeoff thrust set 후부터 Inhibit된다','80kts RTO 후 Ground speed 75kts 이하가 되면 Inhibit되었던 Caution 및 Advisory message들이 나타난다','Master warning light는 V1 또는 Rotation 중 나중에 발생되는 시점부터 Inhibit된다'],a:2},
+{c:'MASTER WARNING',q:'Takeoff configuration warning이 발생되는 조건이 아닌 것은?',o:['Leading edge and/or trailing edge flaps are not in takeoff position and either engine thrust is in the takeoff range','Parking brake is set and either engine thrust is in the takeoff range','Rudder Trim not centered when either engine thrust is in the takeoff range','Nose gear is not centered when either engine thrust is in the takeoff range'],a:3},
+{c:'MASTER WARNING',q:'GPWS 설명 중 맞는 것은?',o:['GPWS는 독립된 Computer가 있어 신뢰성을 증가하였다','이륙 중이거나 Go-Around 시 Flaps/gear up 상태에서 고도가 감소하면 DON\'T SINK message와 aural alert가 발생한다','HUD에는 GPWS warning이 시현되지 않는다','GPWS warning 발생 시 AURAL CANCEL Switch를 사용하여 Aural alert들을 취소해야 한다'],a:1},
+{c:'MASTER WARNING',q:'EICAS messages 설명 중 맞는 것은?',o:['EICAS alert messages are the primary method to alert the crew to non-normal conditions','EICAS communication messages are crew reminders of certain flight crew selected normal conditions','EICAS memo messages indicate equipment faults which may affect airplane dispatch capability','EICAS status messages direct the crew to normal'],a:0},
+{c:'MASTER WARNING',q:'EICAS message가 2 page 이상일 경우 Next page를 시현시키는 방법은?',o:['Push the NXT switch','Push the EICAS switch again','Push the CANC/RCL switch','Push the MSG switch'],a:0},
+{c:'MASTER WARNING',q:'Tail strike detection system 설명 중 틀린 것은?',o:['Detects ground contact which could damage the airplane pressure hull','A two inch blade target and two frangible wires are installed on the aft body','The EICAS caution message TAIL STRIKE is displayed when a tail strike is detected','Tail strike indication is accompanied by a beeper and Master WARNING light'],a:3},
+{c:'MASTER WARNING',q:'항공기가 지상에서 Takeoff configuration warning function이 Arm되는 시기는?',o:['Both engine thrust is in takeoff range','Fuel control switches are in Run position','Thrust reversers are unlocked','Airspeed is less than Vmcg'],a:1},
+{c:'MASTER WARNING',q:'PFD에 시현되는 Alert는?',o:['Auto throttle disengaged alert','Thrust asymmetry maximum speed','Time critical warnings','High and low altitude alert'],a:2},
+{c:'MASTER WARNING',q:'다음 airspeed alert 설명 중 틀린 것은?',o:['Takeoff V1 - VEE ONE sounds 1 second before reaching V1','TAMS is displayed on the speed tape for minimum control speed with large thrust asymmetry','AIRSPEED LOW is displayed in amber when airspeed is below minimum maneuvering speed','OVERSPEED cannot be canceled by pushing Master WARNING/CAUTION Reset switch'],a:3},
+{c:'POWER PLANT / APU',q:'전원이 없는 상태에서 Battery switch On 후 APU 시동 시, APU controller는 무엇을 기다리는가?',o:['The battery voltage of the main battery','APU inlet door position','That the common core system (CCS) applications are available','Fuel pressure from the right fuel manifold'],a:2},
+{c:'POWER PLANT / APU',q:'Engine failure alert system이 Both PFD에 Red ENG FAIL annunciation과 Both HUD에 ENG FAIL을 시현시켜 주는 시기는?',o:['During takeoff with airspeed between 65 knots and 6 knots prior to V1 if actual thrust is less than commanded thrust','Anytime during flight where engine performance is more than the commanded engine performance','During approach when less than 1,000 feet AGL and the engine is producing more commanded thrust','During takeoff at any speed if engine is producing less than commanded thrust and not satisfactorily increasing'],a:3},
+{c:'POWER PLANT / APU',q:'B787 GEnx-1B74/75 Engine 설명 중 맞는 것은?',o:['Chevron Shape Nacelle이 장착되어 Engine 소음이 전혀 없다','EDTO는 120분까지 FAA에서 인가 받았다','Takeoff thrust는 각각 74,100 pounds이다','Engine Bleed Air를 전혀 사용하지 않아 연료가 절감된다'],a:3},
+{c:'POWER PLANT / APU',q:'Secondary engine indication이 시현되는 경우는?',o:['항공기 처음으로 Electrical Power를 공급 받을 때','Secondary Engine Parameter 중 Exceedance가 발생될 때','Start Selector가 START 위치일 때','위 모두 맞다'],a:3},
+{c:'POWER PLANT / APU',q:'Engine Oil System 설명 중 틀린 것은?',o:['EICAS Message나 Protection 기능이 없어 결함 발생 시 수동으로 Engine Shutdown 해야한다','Oil Temperature의 Amber Mark는 Caution Range reached를 나타낸다','Oil Quantity가 Low 시 LO Text가 표시된다','Oil Pressure의 Red Mark는 Limit reached를 나타낸다'],a:0},
+{c:'POWER PLANT / APU',q:'Starting Indication 설명 중 맞는 것은?',o:['지상에서는 Auto start mode를 시현하고, In flight에서는 Manual start mode를 시현한다','Engine이 정상적으로 Start 후 Idle 이상 시 Green color로 RUNNING text가 30초간 표시된다','In flight 중에 Engine start가 가능한 최저 고도와 Airspeed Range가 표시된다','Engine start 중 Engine idle 이하에서는 Idle target indication이 amber color로 나타난다'],a:1},
+{c:'POWER PLANT / APU',q:'EEC와 EEC Mode 설명 중 틀린 것은?',o:['EEC mode는 Normal mode, soft Alternate mode와 hard Alternate Mode가 있다','Forward position일 때 EEC에 의해 계산된 Maximum rated thrust가 설정된다','Soft alternate mode는 자동으로 전환된다','Hard alternate mode로 전환 전 Over boost를 방지하기 위해 Thrust lever를 Full forward 위치를 유지해야 한다'],a:3},
+{c:'POWER PLANT / APU',q:'Engine Idle 설명 중 틀린 것은?',o:['Approach Idle, Minimum Idle과 Icing Idle Mode가 있다','지상과 공중의 대부분은 Minimum Idle로 동작한다','지상에서 Thrust Reverser가 Deploy되거나 Touchdown 후 5초 동안 Approach Idle Mode가 된다','Wing-ENG Anti-ice System 동작하면 Icing Idle로 전환된다'],a:1},
+{c:'POWER PLANT / APU',q:'B787 항공기 Engine 설명 중 맞는 것은?',o:['The N1 and N2 rotors are mechanically connected','The engine gearbox is driven by the high speed N1 engine shaft','If engine data is not available, the associated engine indication blanks. ENG INDICATE EICAS message is displayed','N1 and EGT are displayed full-time on the EICAS display'],a:3},
+{c:'POWER PLANT / APU',q:'Secondary engine indication 설명 중 맞는 것은?',o:['When secondary engine parameters are automatically displayed on EICAS, they cannot be cleared until the condition is no longer present','Engine EGT is secondary indication. If maximum continuous limit reached, it is displayed automatically','After engine is reached idle, RUNNING indication blanks 10-30 seconds','Fuel flow indication displays pounds per minute X 1000'],a:1},
+{c:'POWER PLANT / APU',q:'EEC idle이 아닌 것은?',o:['Minimum idle','Approach idle','Ice idle','Reverse idle'],a:3},
+{c:'POWER PLANT / APU',q:'EEC alternate mode에서 작동하지 않는 것은?',o:['Auto throttle','Low speed protection','Over speed protection','Maximum and red line N1 information'],a:3},
+{c:'POWER PLANT / APU',q:'Reverser system Activated 시 나타나는 현상이 아닌 것은?',o:['The reverser translating sleeves hydraulically move aft','The reverse thrust levers can be raised to the maximum reverse thrust position','The fan flow blocker doors rotate into place to direct fan air through stationary cascade guide vanes','The reverser indication REV is displayed in amber above each digital N1 indication'],a:3},
+{c:'POWER PLANT / APU',q:'APU 설명 중 맞는 것은?',o:['APU running (95% + 2 sec) 시 no EICAS message','During the cool down period, the APU cannot be returned to its running condition','In flight, 3개 이상의 engine generators가 offline이 되면 APU는 자동으로 시작된다 (APU selector 위치 무관)','APU LIMIT message 표시 후 수동 shut down 시 2분의 cool down period가 있다'],a:2},
+{c:'AIR CONDITIONING',q:'FLT DECK TEMP Control의 Mid position (12 o\'clock)은 대략 몇 도(C)를 설정하는가?',o:['22','23','24','25'],a:2},
+{c:'AIR CONDITIONING',q:'TRIM AIR Switches가 FAULT illuminated (amber)되는 경우가 아닌 것은?',o:['The trim air valve is failed closed','The trim air valve is commanded closed because of a zone supply duct overheat','The trim air valve is commanded open','The TRIM AIR switch is selected off'],a:2},
+{c:'AIR CONDITIONING',q:'Cabin temp auto control에서 passenger cabin master reference temperature 범위는?',o:['Between 17C and 27C','Between 18C and 30C','Between 15C and 29C','Between 18C and 29C'],a:3},
+{c:'AIR CONDITIONING',q:'AIR COND RESET Switch를 PUSH 했을 때 내용으로 잘못된 것은?',o:['Resets any air conditioning faults and attempts to restart normal operation','Resets any trim air valves held open due to overheat, control failure, or valve failure','Attempts to reset a failed recirculation fan','Resets fault protection'],a:1},
+{c:'AIR CONDITIONING',q:'ALT VENT switch의 ALTN amber illuminated 시, outflow valves가 자동 재위치되는 고도는?',o:['When airplane is below 10,000 ft altitude and not on ground','When airplane is below 13,000 ft altitude and not on ground','When airplane is below 14,000 ft altitude and not on ground','When airplane is below 20,000 ft altitude and not on ground'],a:0},
+{c:'AIR CONDITIONING',q:'Shoulder and Foot Heaters 설명 중 잘못된 것은?',o:['SHOULDER HEATER Control은 지상에서만 사용 가능하다 (비행 중 불가)','SHOULDER HEATER Control의 LOW는 electric heater operates on low setting을 의미한다','FOOT HEATER Control의 LOW는 electric heater의 off 상태이다','FOOT HEATER Control은 지상 및 비행 중 pack and recirculation fans이 on일 때 사용 가능하다'],a:0},
+{c:'AIR CONDITIONING',q:'FWD CARGO A/C Control에 의해 조절되는 desired target temperature 범위는?',o:['Between 3C and 28C','Between 4C and 27C','Between 18C and 29C','Between 4C and 29C'],a:3},
+{c:'AIR CONDITIONING',q:'FWD CARGO A/C Control을 Mid position (12 o\'clock)에 set했을 경우 desired target temperature는?',o:['Approximately 15C','Approximately 16C','Approximately 18C','Approximately 24C'],a:0},
+{c:'AIR CONDITIONING',q:'PECS Liquid Quantity Display 설명이 잘못된 것은?',o:['Displays reservoir quantities as a percentage of normal service level (1.00 is normal)','LO (amber) - displayed when the reservoir requires servicing','RF (red) - displayed when reservoir servicing is recommended','OF (white) - displayed when the reservoir is over-full'],a:2},
+{c:'AIR CONDITIONING',q:'Air Synoptic Display에서 Selected Temperatures가 magenta로 표시되지 않는 부분은?',o:['FLT DECK TEMP','FWD CARGO A/C','CABIN TEMP','BULK'],a:3},
+{c:'AIR CONDITIONING',q:'Humidification system operates 20 min into cruise above ( ) and switches off approximately ( ) prior to touch down.',o:['20,000ft, 2 hours','25,000ft, 1-1.5 hours','28,000ft, 1.5 hours','30,000ft, 2-2.5 hours'],a:1},
+{c:'AIR CONDITIONING',q:'Bulk Cargo Heat 설명 중 잘못된 것은?',o:['Bulk cargo compartment ventilation and heat are provided from cabin air through a supply fan and in-line electric heaters','There is some residual heat from the aft E/E cooling exhaust entering from below the compartment floor','Selecting AUTO on the BULK CARGO TEMP switch turns on the bulk ventilation fan to allow for live animal transport','The system has no automatic overheat protection'],a:3},
+{c:'AIR CONDITIONING',q:'Engine anti-ice valves가 자동으로 close되는 경우가 아닌 것은?',o:['For bleed air over temperature','For bleed air overpressure','When a fuel control switch is cut off','During start'],a:3},
+{c:'AIR CONDITIONING',q:'Alternate Ventilation System (AVS) 설명 중 맞는 것은?',o:['Not pressurized normally + ALT VENT ON 시 air is drawn from the aft outflow valve to the flight deck','The AVS provides air flow into the forward electronics bay when both air conditioning packs are off on the ground','The AVS provides an alternate means of ventilating the cabin and flight deck when both packs are inoperative','The ALT VENT switch is guarded to prevent selection, which could open the vent valve and depressurize the airplane'],a:1},
+{c:'AIR CONDITIONING',q:'Integrated Cooling System (ICS) 설명 중 가장 적절한 것은?',o:['ICS is refrigeration system to reduce heat loads on the flight deck and integrated with the forward E/E compartment cooling','ICS controlled by a single ICS switch; under normal conditions, operates whenever at least one engine is operating','ICS provides cooling for components in the aft E/E compartment and non-essential equipment in the lower lobe area','ICS is a centralized refrigeration system that provides cooling to galley carts and assists with cooling recirculated cabin air'],a:1},
+{c:'WING ANTI-ICE',q:'WING ANTI-ICE Selector가 AUTO position에서 Stick shaker logic이 icing conditions으로 SET되는 조건은?',o:['With flaps out of up, icing detected, TAT 0C or less','With flaps up, icing detected, OAT 10C or less','With flaps out of up, icing detected, TAT 10C or less','With flaps up, icing detected, TAT 0C or less'],a:3},
+{c:'WING ANTI-ICE',q:'WINDOW HEAT Switches의 INOP (amber)이 illuminated되지 않는 경우는?',o:['The switch is off','An overheat is detected','Backup window heat anti-fogging system is off','A system fault has occurred'],a:0},
+{c:'WING ANTI-ICE',q:'Automatic ice detection은 지상에서 몇 knots 이하일 때 inhibit되는가?',o:['60 knots','75 knots','80 knots','100 knots'],a:2},
+{c:'WING ANTI-ICE',q:'Engine Anti-Ice System 설명 중 잘못된 내용은?',o:['The engine anti-ice system uses electric to provide engine core and cowl inlet ice protection','Engine anti-ice can be operated in flight or on the ground','The engine anti-ice indication EAI is displayed above the EICAS N1 indication when an engine anti-ice valve is open','The left and right engines have identical, independent anti-ice systems'],a:0},
+{c:'WING ANTI-ICE',q:'Engine anti-ice valves가 자동으로 close되는 경우가 아닌 것은?',o:['During start','For bleed air overpressure','When an engine fire switch is pulled','When a bleed air leak is detected'],a:1},
+{c:'WING ANTI-ICE',q:'Wing anti-ice 작동 시 WAI annunciation은 어디에 어떤 색상으로 표시되는가?',o:['Below the EICAS N1 indication, amber','Above the EICAS N1 indication, amber','Below the EICAS N1 indication, green','Above the EICAS N1 indication, green'],a:2},
+{c:'WING ANTI-ICE',q:'Wing Anti-Ice System 설명 중 잘못된 내용은?',o:['System logic controls symmetrical operation of left and right wing anti-ice','The pneumatic wing anti-ice system powers thermal anti-icing mats on the leading edge slats','If one wing anti-ice thermal mat fails, the opposite thermal mat is automatically de-powered','Wing anti-ice is inhibited on the ground below 75 knots'],a:1},
+{c:'WING ANTI-ICE',q:'In flight with the WING ANTI-ICE selector ON, the system is powered any time TAT is ( ).',o:['below 0C','below 10C','below 15C','below 25C'],a:1},
+{c:'WING ANTI-ICE',q:'Flight Deck Window Heat 설명 중 잘못된 것은?',o:['All flight deck windows are electrically heated','The forward windows have exterior surface anti-icing, and interior surface antifogging protection','The side windows have exterior surface anti-icing only','With the PRIMARY window heat switches in the ON position, the primary system operates automatically'],a:2},
+{c:'WING ANTI-ICE',q:'Windshield Wipers/Washers 설명 중 잘못된 것은?',o:['The forward and side windows are equipped with independently controlled, two-speed wipers','When the WIPER selector in OFF, the respective wiper is off and stowed','The Captains and First Officers windshields are equipped with a windshield washer system','Windshield scratching may occur if wipers are used on a dry windshield surface'],a:0},
+{c:'WING ANTI-ICE',q:'"ANTI-ICE ON" EICAS Advisory Messages가 display되는 조건이 아닌 것은?',o:['An ANTI-ICE selector ON','Ice is detected and an engine anti-ice selector is OFF','TAT is more than 10 degrees C','Ice is not detected'],a:1},
+{c:'WING ANTI-ICE',q:'Wing Anti-Ice System 설명 중 맞는 것은? (load shed)',o:['The Wing Anti-ice System may load shed momentarily during high electrical loads','The Wing Anti-ice System provides bleed air to all the leading edge slats on each wing','The Wing Anti-ice System provides bleed air to the three outboard leading edge slats on each wing','The Wing Anti-ice System is inhibited during all ground operations'],a:0},
+{c:'WING ANTI-ICE',q:'Wing Anti-Ice System 설명 중 맞는 것은? (automatic operation)',o:['In AUTO, wing anti-ice is powered anytime TAT is below 10C','Wing Anti-Ice System Automatic Operation is available only in flight','Wing Anti-Ice is inhibited when it is less than 10 minutes from ground to air transition','If one wing anti-ice thermal mat fails, the opposite is automatically de-powered'],a:1},
+{c:'WING ANTI-ICE',q:'ENGINE ANTI-ICE Selector 설명 중 잘못된 것은?',o:['OFF - the engine anti-ice valves are commanded closed','AUTO - in flight, the engine anti-ice valves are opened or closed automatically by the ice detection system','ON - with flaps up, stick shaker logic is set for icing conditions','ON - the engine anti-ice valves are commanded open'],a:2},
+{c:'PRESSURIZATION',q:'During unplanned level segments or when VNAV is disengaged에서의 cabin altitude 변화는?',o:['Change the FMC cruise altitude to assure proper pressurization schedule','Cabin altitude remains constant as long as airplane altitude is not changing','The cabin altitude will climb to 6,000 feet','The cabin altitude will continue climbing to the FMC cruise altitude'],a:1},
+{c:'PRESSURIZATION',q:'LDG ALT Selector를 Pull ON, then rotate하면 landing altitude를 set할 수 있다. 맞는 내용은?',o:['100 foot increments when turned slowly, 500 foot increments when turned quickly','100 foot increments at the first detent, 1000 foot increments at the second detent','10 foot increments when turned slowly, 100 foot increments when turned quickly','100 foot increments when turned slowly, 300 foot increments when turned quickly'],a:0},
+{c:'PRESSURIZATION',q:'LDG ALT Selector를 Pull ON, then rotate할 경우 설명으로 틀린 것은?',o:['Sets landing altitude manually','Landing altitude followed by MAN displayed on EICAS','When turned slowly, landing altitude display changes in 100 foot increments','When turned quickly, display changes in 1000 foot increments'],a:3},
+{c:'PRESSURIZATION',q:'Pressurization System 설명 중 잘못된 것은?',o:['Cabin pressurization is controlled by regulating the discharge of conditioned cabin air through the outflow valves','Two outflow valves are installed: one forward and one aft','Cabin altitude and full ventilation rates can be maintained by either valve','Two outflow valves protect the fuselage against excessive pressure differential'],a:3},
+{c:'PRESSURIZATION',q:'If cruise altitude is unavailable from the FMC in AUTO, the default cruise altitude is ( ).',o:['42,000 feet','42,100 feet','43,000 feet','43,100 feet'],a:2},
+{c:'PRESSURIZATION',q:'In the cruise mode, the cabin altitude is normally at or below ( ). During degraded operations the cabin may be commanded to climb to as high as ( ).',o:['6,000 feet, 8,000 feet','5,000 feet, 8,000 feet','5,000 feet, 7,000 feet','6,000 feet, 7,000 feet'],a:0},
+{c:'PRESSURIZATION',q:'Pressurization System Automatic Operation 설명 중 틀린 것은?',o:['For takeoff, the system supplies a small negative pressurization prior to rotation to cause a smooth cabin altitude transition','In climb mode, cabin altitude increases on a schedule related to the airplane climb rate and flight plan cruise altitude','During descent, cabin altitude decreases to slightly below the FMC planned landing altitude','At touchdown, both outflow valves open to depressurize the cabin'],a:0},
+{c:'PRESSURIZATION',q:'If landing altitude is unavailable from the FMC, and not set in MAN, the EICAS advisory message ( ).',o:['CABIN ALTITUDE is displayed and the cabin altitude controller assumes a landing altitude of 2,000 feet','LANDING ALTITUDE is displayed and the cabin altitude controller assumes a landing altitude of 1,000 feet','CABIN ALTITUDE is displayed and the cabin altitude controller assumes a landing altitude of 1,000 feet','LANDING ALTITUDE is displayed and the cabin altitude controller assumes a landing altitude of 2,000 feet'],a:3},
+{c:'PRESSURIZATION',q:'Pressurization System Manual Operation 설명 중 잘못된 것은?',o:['The pressurization system is in the manual mode when the OUTFLOW VALVE switches are set to MAN','The system is manually operated','Outflow valve position is displayed on the Air Synoptic Display','Holding the OUTFLOW VALVE MANUAL switch for 30 seconds moves the valve from full open or closed to the selected position'],a:3},
+{c:'PRESSURIZATION',q:'Air Systems EICAS Message 중 잘못된 것은?',o:['CABIN ALTITUDE - Cabin altitude is excessive','HIGH CABIN ALT MODE - The Cabin Altitude Warning limit is set higher than 14,000 feet due to a high takeoff or landing altitude','PACK ALTITUDE LIMIT - Airplane altitude is limited because two CACs are inoperative','PACK L+R - Both packs are inoperative'],a:1},
+{c:'HYDRAULIC',q:'Which hydraulic systems are identical differing only in the components they power?',o:['The left and right hydraulic systems','The left, right and center hydraulic systems','None, they are all uniquely different','The right and center hydraulic systems'],a:0},
+{c:'HYDRAULIC',q:'The RAT, when deployed, provides hydraulic power to the primary flight controls connected to which hydraulic system(s)?',o:['Center','Left','Left, Center and Right','Right'],a:0},
+{c:'HYDRAULIC',q:'비행 중 RAT이 automatically deploy되는 조건이 아닌 것은?',o:['Both engines have failed','Center hydraulic system pressures are low','Loss of all electrical power to captain\'s and first officer\'s flight instruments','Loss of all four EMPs and an engine fails on takeoff or landing'],a:3},
+{c:'HYDRAULIC',q:'Hydraulic center demand pump가 작동하는 조건이 아닌 것은?',o:['System low pressure','On the ground for the first 10 minutes after the first engine is started','From takeoff thrust set until radio altitude exceeds 2000 feet','Flaps or slats are in motion'],a:1},
+{c:'HYDRAULIC',q:'Hydraulic reservoir quantity low는 status display에 어떻게 표시되는가?',o:['LO is displayed in white','QTY is displayed in white','QTY is displayed in amber','LO is displayed in amber'],a:3},
+{c:'HYDRAULIC',q:'Hydraulics EICAS Message의 HYD PRESS DEM L, R가 의미하는 것은?',o:['All hydraulic system pressures are low','The affected hydraulic system pressure is high','The affected demand pump pressure is low when commanded on','The affected primary hydraulic pump pressure is low'],a:2},
+{c:'HYDRAULIC',q:'Center hydraulic system isolation functionality 관련 내용 중 잘못된 것은?',o:['The isolation function uses a NGIV, RSIV, AEIV and a reservoir standpipe','The hydraulic isolation systems ensure the flight crew can lower the landing gear and nose wheel steering is operational','The isolation valves cannot be controlled by the crew','There are certain failure modes which require demand pumps to load shed'],a:2},
+{c:'HYDRAULIC',q:'Center hydraulic system에 의해 작동되는 것이 아닌 것은?',o:['The left engine thrust reverser','Nose gear steering','Landing gear actuation','Trailing edge flaps'],a:3},
+{c:'HYDRAULIC',q:'Left/Right Engine PRIMARY Pump Switches 설명 중 잘못된 것은?',o:['ON - the engine-driven hydraulic pump pressurizes the related hydraulic system when engine starts','Off - the engine-driven hydraulic pump is turned off and depressurized','FAULT illuminated (red) - high primary pump pressure','FAULT illuminated (amber) - excessive primary pump fluid temperature'],a:2},
+{c:'HYDRAULIC',q:'Hydraulic Display Quantity (QTY) 설명 중 잘못된 것은?',o:['Displays reservoir quantity as a percentage of normal service level (1.00 is normal)','LO (amber) - displayed when the reservoir quantity is low','OF (white) - displayed when the reservoir is over-full (inhibited in flight)','RF (red) - displayed when the reservoir requires refilling (inhibited on the ground)'],a:3},
+{c:'HYDRAULIC',q:'Hydraulic Synoptic Display에 display되지 않는 것은?',o:['The Nose Gear Isolation Valve (NGIV)','The Alternate Extend Isolation Valve (AEIV)','The Reserve Steering Isolation Valve (RSIV)','All the above'],a:3},
+{c:'HYDRAULIC',q:'Hydraulic system 설명 중 틀린 것은?',o:['The airplane has two independent 3000-5000psi hydraulic systems','Flight control system components are distributed so that any one hydraulic system can provide adequate controllability','Hydraulic fluid is supplied to each pump from the associated system reservoir','The reservoirs are pressurized by pump outlet pressure'],a:0},
+{c:'HYDRAULIC',q:'The L and R demand pumps가 AUTO position에서 작동하는 조건이 아닌 것은?',o:['On the ground, for the first 5 minutes after the first engine is started','From takeoff thrust set to flaps retracted','During descent and landing, from gear down or RA less than 1000 feet, to groundspeed less than 40 knots','Thrust reverser operation'],a:0},
+{c:'LANDING GEAR',q:'RTO autobrake setting에서 maximum braking pressure를 command하는 groundspeed는?',o:['Groundspeed is at or below 65 knots','Groundspeed is above 85 knots','Groundspeed is at or above 90 knots','Groundspeed is at 80 knots'],a:1},
+{c:'LANDING GEAR',q:'How is the landing gear held in the UP position after retraction?',o:['Over-center struts','Uplocks','A locked door structure','Hydraulic pressure'],a:1},
+{c:'LANDING GEAR',q:'What is the limit of nose wheel steering turn when using the rudder pedals?',o:['20 degrees in either direction','70 degrees in either direction','5 degrees in either direction','8 degrees in either direction'],a:3},
+{c:'LANDING GEAR',q:'What powers the landing gear to move to the extended position?',o:['Gravity powers the gear to free-fall to the down and locked position','Hydraulic power extends the landing gear','Electric motors extend the landing gear','Aerodynamic forces move the gear to extended position'],a:1},
+{c:'LANDING GEAR',q:'Which feature of the brake system monitors and adjusts the clamping force during brake cooling after Parking Brake application?',o:['Park and adjust','Adjusted cooling','Brake auto-adjust','Clamp cooling force'],a:2},
+{c:'LANDING GEAR',q:'If the gear is not up and locked after normal transit time, what EICAS caution message is displayed?',o:['GEAR DOOR','GEAR DISAGREE','GEAR DOWN','GEAR CONTROL'],a:1},
+{c:'LANDING GEAR',q:'RTO autobrake - above what groundspeed will it command maximum braking pressure?',o:['75Kts','80Kts','90Kts','85Kts'],a:3},
+{c:'LANDING GEAR',q:'Which braking action provides the greatest aircraft deceleration rate on a dry runway in the landing mode?',o:['Auto brakes selection 1','Auto brakes selection MAX AUTO','Full pedal braking','Auto brakes selection 4'],a:2},
+{c:'LANDING GEAR',q:'Autobrake system disarms and EICAS advisory message AUTOBRAKE displayed되는 경우가 아닌 것은?',o:['Pedal braking applied','Either thrust lever advanced after landing','AUTOPILOT-BRAKE fault','Loss of inertial data from the IRUs'],a:2},
+{c:'LANDING GEAR',q:'Autobrake system이 disarmed 또는 failed시 나타나는 Landing Gear EICAS Messages는?',o:['AUTOBRAKE','BRAKES','ANTISKID','AUTOBRAKE MAX'],a:0},
+{c:'LANDING GEAR',q:'Landing Gear System 설명 중 잘못된 것은?',o:['Hydraulic power for retraction, extension, and steering is supplied by the center hydraulic system','An alternate extension system is not provided','A brake temperature monitor system displays the temperature for each brake on the GEAR synoptic','A tire pressure monitor system displays pressure for each tire on the GEAR synoptic'],a:1},
+{c:'FLIGHT CONTROL',q:'Complete loss of flight control signaling 시 올바른 것은?',o:['The electrically actuated stabilizer and two spoiler pairs allow pilot control of pitch and roll using the primary and alternate pitch trim switches and the control wheel','Redundant flight control programming in the ACEs is enabled by disconnecting the primary flight computers','Direct wiring from the flight deck to the stabilizer and a spoiler pair allow pilot control of pitch using the alternate pitch trim switches and roll using the control wheel','The flight controls are actuated by direct wiring to the hydraulic flight control actuators'],a:2},
+{c:'FLIGHT CONTROL',q:'When is the autodrag function available during flight?',o:['It operates only in the landing configuration; flaps 25 or 30 and the thrust levers are at idle','It operates so that flight control surface deflection is removed at 1,000 feet AGL for normal flare and touchdown procedures','It is only available in the Non-Normal mode','Only when below 225KIAS and the flaps are not up'],a:0},
+{c:'FLIGHT CONTROL',q:'787 stabilizer trim system trim indication이 display되는 위치는?',o:['On the auxiliary (AUX) display','On the aft aisle stand','On the control stand','On the EICAS display'],a:3},
+{c:'FLIGHT CONTROL',q:'Spoilers 설명 중 잘못된 것은?',o:['There are 7 sets of spoilers, 4 outboard and 3 inboard of the flaperons, on the upper surface of each wing','All three hydraulic systems supply 5 pairs of spoilers','Spoiler panels are used as speedbrakes to increase drag and reduce lift, in flight only','The remaining two spoiler pairs are individually powered by two electrical buses'],a:2},
+{c:'FLIGHT CONTROL',q:'Flight Control Mode SECONDARY or DIRECT Indications은 어디에 display되는가?',o:['On the auxiliary (AUX) display panel','On the non-normal flight control synoptic','On the navigation display panel','On the hydraulic synoptic display'],a:1},
+{c:'FLIGHT CONTROL',q:'Flap and slat extension from the UP position is inhibited when ( ).',o:['Speed more than 250 KIAS or altitude above approximately 10,000 feet','Speed more than 260 KIAS or altitude above approximately 15,000 feet','Speed more than 260 KIAS or altitude above approximately 20,000 feet','Speed more than 280 KIAS or altitude above approximately 22,000 feet'],a:2},
+{c:'FLIGHT CONTROL',q:'Flight Control System EICAS Message "FLIGHT CONTROL MODE"의 의미는?',o:['The flight control system is in the secondary mode','The flaps primary mode is failed','The flight control system is operating in the direct mode','The slats primary mode is failed'],a:0},
+{c:'FLIGHT CONTROL',q:'"The nose gear pressure sensor disagrees with the computed stabilizer greenband." 상태에서 나오는 EICAS Message는?',o:['STABILIZER','STABILIZER CUTOUT','STABILIZER L2','STAB GREENBAND'],a:3},
+{c:'FLIGHT CONTROL',q:'EICAS DISPLAY에서 Normal Flap Position Indication은 언제 removed되는가?',o:['5 seconds after flap retraction','10 seconds after slat retraction','After airborne','When the slats extend to the midrange position'],a:1},
+{c:'FLIGHT CONTROL',q:'Expanded Flap and Slat Position Indications 설명 중 잘못된 것은?',o:['The slat indication fills up (forward) for extension','The flap indication fills down (aft) for extension','Indication colors WHITE when operating in secondary mode','Indication colors RED-AMBER when the respective FLAPS DRIVE or SLATS DRIVE EICAS caution message is displayed'],a:3},
+{c:'FLIGHT CONTROL',q:'Primary Flight Control System Mode 중 하나가 아닌 것은?',o:['Normal','Alternate','Secondary','Direct'],a:1},
+{c:'FLIGHT CONTROL',q:'The spoilers automatically retract and speedbrake lever moves to DOWN position이 되는 조건이 아닌 것은?',o:['On the ground, when either thrust lever is moved to the takeoff range','On the ground, if there is a transition to in the air','On the ground and both thrust reverse levers are moved to the reverse idle detent','In the air, when either thrust lever is beyond 90% full travel'],a:3},
+{c:'FLIGHT CONTROL',q:'Flap and Slat Mode가 secondary mode로 automatically selected되는 condition이 아닌 것은?',o:['Center hydraulic system failed','Control surfaces travel at less than 50% of the normal hydraulic rate','Flap or slat disagree is detected','Flap or slat primary control failure'],a:0},
+{c:'FLIGHT CONTROL',q:'Flap/Slat Load Relief 관련 설명 중 틀린 것은?',o:['In the primary mode, the flap load relief system protects the flaps from excessive air loads','If flap airspeed placard limits are exceeded with flaps in 15 through 30 position, LOAD RELIEF is displayed and flaps retract to safe position','Load relief retraction is limited to flaps 1-5','When airspeed is reduced, the flaps automatically re-extend as airspeed allows'],a:2},
+{c:'OXYGEN',q:'Passenger cabin oxygen masks automatically drop prior to the cabin altitude reaching the greater of what altitude?',o:['13,500 feet, or 2000 feet above the origin or destination airfield','13,000 feet, or 1000 feet above origin or destination airfield +2000 feet','14,500 feet, or origin airfield altitude +1500 feet, or destination airfield altitude +1500 feet','14,000 feet, or 1000 feet above origin or destination airfield altitude +1000 feet'],a:2},
+{c:'OXYGEN',q:'Emergency (EMGCY)/100%/Normal (N) Selector 설명 중 잘못된 것은?',o:['EMGCY - supplies 100% oxygen under positive pressure at all cabin altitudes (protects against smoke and harmful vapors)','100% - supplies 100% oxygen on demand (not an air/oxygen mixture)','N (normal) - supplies an air/oxygen mixture on demand (ratio depends on cabin altitude)','N (normal) - Automatically supplies 100% oxygen on demand when cabin altitude is below 10,000 feet'],a:3},
+{c:'OXYGEN',q:'Flight Deck Oxygen System 설명으로 잘못된 것은?',o:['The flight crew oxygen system uses quick-donning diluter-demand masks located at flight crew and observer stations','Oxygen flow is controlled by an automatic pressure breathing regulator mounted on each mask','During the preflight check, a pressure decrease may indicate the crew oxygen cylinder shutoff valve is closed','When the right-hand door to the mask stowage box is closed, oxygen flows to the mask regulator and the microphone activates'],a:3},
+{c:'OXYGEN',q:'Passenger Cabin Oxygen System 설명으로 잘못된 것은?',o:['The system provides oxygen to the main seating area, galleys, flight attendant stations, overhead crew rest areas, and lavatories','The passenger cabin oxygen system is supplied by gaseous oxygen stored in small high pressure cylinders','Oxygen is available for approximately 100 minutes','The oxygen cylinders are single use devices and once activated, provides oxygen until the cylinder is depleted'],a:2},
+{c:'OXYGEN',q:'Crew oxygen cylinder pressure (PSI)는 Systems (SYS) display의 어디에서 볼 수 있나?',o:['Door Synoptic Display','Air Synoptic Display','Electrical Synoptic Display','Status (STAT) Synoptic Display'],a:3},
+{c:'AVIONICS / COMM',q:'VHF or HF radio transmits for more than 30 seconds - stuck mic protection에 대해 올바른 것은?',o:['The EICAS advisory message RADIO TRANSMIT CAPT, F/O, or OBS is displayed','On the ground the EICAS caution message STUCK MIC CAPT, F/O, OBS appears','Stuck microphone protection is available while airborne; the affected radio is disabled until reset on the ground','On the ground with the engine running, dashes appear in the respective TCP frequency line'],a:0},
+{c:'AVIONICS / COMM',q:'TCP VHF page display function (Active entry option) 설명 중 올바른 것은?',o:['VHF pages 2, 3, and 4 can contain up to four stored frequencies. Frequencies stored during flight may not be manually deleted using the CLR key','For the selected radio, the frequency transfer switch moves the alternate frequency to become the active frequency. The previously active frequency is deleted','New frequencies are entered into the scratchpad. Entering the decimal and/or following zeros are optional','Scratchpad frequencies can only be entered into the standby windows'],a:2},
+{c:'AVIONICS / COMM',q:'VHF Communication System 기능 설명 중 올바른 것은?',o:['When a VHF radio is tuned to frequency 121.5, all flight crews automatically monitor the radio','Each VHF radio is controlled only through its respective TCP','Only one VHF radio can operate in the DATA mode at one time','In the event of an electrical power loss, the right VHF radio and the right TCP continue to operate on standby power'],a:2},
+{c:'AVIONICS / COMM',q:'CVR TEST Switch Push and hold for two seconds (ground, engines off) 시 내용 중 잘못된 것은?',o:['Tests area microphone CVR channel','A test tone is heard from flight deck speakers','Erases voice recorder','An EICAS status message is displayed if test fails'],a:2},
+{c:'AVIONICS / COMM',q:'CVR를 ERASE하려면 CVR ERASE Switch를 어떻게 사용해야 하는가?',o:['Push (on the ground and engines off)','Push and hold for five seconds (engines running)','Push (on the ground and engines running)','Push and hold for two seconds (on the ground and engines off)'],a:3},
+{c:'AVIONICS / COMM',q:'AFT AISLE STAND PANEL의 Printer 설명 중 잘못된 것은?',o:['Printer FAIL Light - the printer is failed','Printer PAPER Light - printer is out of paper','Printer PAPER Light - paper loading door is open','With both FAIL and PAPER lights illuminated, a printer test is in progress'],a:3},
+{c:'AVIONICS / COMM',q:'Audio Control Panels (ACP) 설명 중 잘못된 것은?',o:['The ACPs are used to manage the radio and interphone communication systems','The oxygen mask microphone is disabled and the boom microphone is enabled when the right oxygen mask stowage box door is closed','Navigation receiver audio can also be monitored','The captain, first officer, and first observer ACPs are installed on the aft aisle stand'],a:1},
+{c:'AVIONICS / COMM',q:'Stuck Mic Protection 설명 중 잘못된 것은?',o:['VHF or HF radio transmits for more than 20 seconds, the EICAS caution message RADIO TRANSMIT is displayed','The EICAS advisory message RADIO TRANSMIT is removed when the transmission stops','On the ground, any VHF radio that transmits for more than approximately 35 seconds is automatically disabled','On the ground, several seconds before disablement, an intermittent tone can be heard through the audio system'],a:0},
+{c:'FLIGHT INSTRUMENTS',q:'언제 AOA limit symbol이 HUD에 display되는가?',o:['When angle of attack is within 5 degrees of stick shaker, or the stick shaker is active','When angle of attack is within 10 degrees of stick shaker','During the flight with the flaps are not up','Symbology control switches on each control wheel allow the pilot to alternate between the two display modes'],a:0},
+{c:'FLIGHT INSTRUMENTS',q:'Current IRS heading, track and other heading information은 PFD 어느 부분에 display되는가?',o:['Airspeed/Mach Indications','Attitude, Steering, and Miscellaneous Indications','Mini-map','Flight Mode Annunciations'],a:1},
+{c:'FLIGHT INSTRUMENTS',q:'Takeoff Reference Speed 중 V2가 climb-out 중 removed되는 조건이 아닌 것은?',o:['When flap retraction begins','At lift-off','After 10 minutes have passed without flap lever movement','After VREF has been selected (for a turn-back)'],a:1},
+{c:'FLIGHT INSTRUMENTS',q:'HUD의 BARO Minimums Pointer 설명 중 틀린 것은?',o:['When BARO minimums are displayed, the number is also represented as a triangular bug and line on the altitude scale','Flashes for 3 seconds, then steady when the airplane descends below BARO minimums','When RA minimums are displayed after BARO minimums are selected, the bug remains on the altitude scale','It is an amber line, left of the altitude scale, when BARO minimums are displayed'],a:2},
+{c:'FLIGHT INSTRUMENTS',q:'What will be seen on the navigation performance scales when the ANP equals or exceeds the RNP?',o:['The ANP Bars are withdrawn from sight','The ANP Bars turn magenta and flash for 10 seconds','With GPS updating the aircraft will not exceed RNP','The ANP bars touch at the center, turn amber, deviation pointer flashes for 10 seconds, and the NAV UNABLE RNP EICAS message is displayed'],a:3},
+{c:'FLIGHT INSTRUMENTS',q:'When are the Closed Loop Conditional Line Items displayed in cyan on an Electronic Checklist (ECL)?',o:['When the conditional line item is sensed false','When the conditional line item is sensed true','When action is not required, the line item is complete','When action is required, the line item is incomplete'],a:1},
+{c:'FLIGHT INSTRUMENTS',q:'Electronic Flight Bag (EFB) function 설명 중 옳은 것은?',o:['The EFB is an operating system with applications designed to assist the flight crew with routine tasks, enhance security, and reduce reliance on paper documents','The primary method of flight crew interaction with the EFB is with full size keyboard on the flight deck','Under typical flight conditions, the majority of pilot interaction with the EFB consists of downloading and printing FMC data','The EFBs can exchange data with the FMC, but they cannot display information from the offside unit'],a:0},
+{c:'FLIGHT INSTRUMENTS',q:'NPS Deviation Pointer 설명 중 옳은 것은?',o:['The Deviation Pointer is displayed on the vertical deviation scale in both the climb and descent phase of flight','The Deviation Pointer is displayed on the lateral deviation scale whenever the scale is displayed','The Deviation Pointer is a filled magenta triangle when parked at deflection limit','The Deviation Pointer flashes for five seconds if pointer migrates into bar area'],a:1},
+{c:'FLIGHT INSTRUMENTS',q:'PFD Flap Maneuvering Speeds는 대략 어느 고도에서 displayed되지 않는가?',o:['Above approximately 10,000 feet altitude','Above approximately 14,000 feet altitude','Above approximately 20,000 feet altitude','Below approximately 20,000 feet altitude'],a:2},
+{c:'FLIGHT INSTRUMENTS',q:'ND에 displayed되는 Position trend vector (white, dashed line) 설명이 잘못된 것은?',o:['Predicts position at the end of 30, 60, and 90 second intervals','Each segment represents 20 seconds','Based on bank angle and groundspeed','Selected range determines the number of segments displayed'],a:1}
+];
+
+const cats=[...new Set(Q.map(q=>q.c))];
+let selCats=new Set(cats),qCount=10,queue=[],idx=0,corr=0,wrng=0,answered=false;
+
+// build setup
+const catRow=document.getElementById('catRow');
+cats.forEach(cat=>{
+  const b=document.createElement('button');
+  b.className='catb on';b.textContent=cat;
+  b.onclick=()=>{if(selCats.has(cat)){if(selCats.size>1){selCats.delete(cat);b.classList.remove('on');}}else{selCats.add(cat);b.classList.add('on');}};
+  catRow.appendChild(b);
+});
+document.querySelectorAll('.cntb').forEach(b=>{
+  b.onclick=()=>{document.querySelectorAll('.cntb').forEach(x=>x.classList.remove('on'));b.classList.add('on');qCount=parseInt(b.dataset.n);};
+});
+document.getElementById('startBtn').onclick=start;
+
+function start(){
+  const pool=Q.filter(q=>selCats.has(q.c)).sort(()=>Math.random()-.5);
+  const n=qCount>=9999?pool.length:Math.min(qCount,pool.length);
+  if(!n){alert('챕터를 선택하세요.');return;}
+  queue=pool.slice(0,n);idx=0;corr=0;wrng=0;answered=false;
+  document.getElementById('setupScr').style.display='none';
+  document.getElementById('quizScr').classList.remove('hide');
+  document.getElementById('resultScr').classList.remove('show');
+  updateSB();render();
+}
+
+function render(){
+  if(idx>=queue.length){showResult();return;}
+  answered=false;
+  const q=queue[idx];
+  document.getElementById('badge').textContent=q.c;
+  document.getElementById('meta').textContent='문제 '+(idx+1)+' / '+queue.length;
+  document.getElementById('qt').textContent=q.q;
+  document.getElementById('pf').style.width=(idx/queue.length*100)+'%';
+  const oc=document.getElementById('opts');oc.innerHTML='';
+  q.o.forEach((opt,i)=>{
+    const b=document.createElement('button');
+    b.className='opt';
+    b.innerHTML='<span class="lbl">'+L[i]+'</span><span>'+opt+'</span>';
+    b.onclick=()=>pick(i);
+    oc.appendChild(b);
+  });
+  const fb=document.getElementById('fb');fb.className='fb';fb.innerHTML='';
+  document.getElementById('nextBtn').classList.add('hide');
+  updateSB();
+}
+
+function pick(i){
+  if(answered)return;answered=true;
+  const q=queue[idx];
+  const btns=document.querySelectorAll('.opt');
+  btns.forEach((b,j)=>{b.disabled=true;if(j===q.a)b.classList.add('ok');if(j===i&&i!==q.a)b.classList.add('ng');});
+  const fb=document.getElementById('fb');
+  if(i===q.a){corr++;fb.className='fb ok show';fb.innerHTML='<b>✓ 정답입니다!</b>';}
+  else{wrng++;fb.className='fb ng show';fb.innerHTML='✗ 오답. 정답: <span class="ans">'+L[q.a]+'. '+q.o[q.a]+'</span>';}
+  document.getElementById('nextBtn').classList.remove('hide');
+  updateSB();
+}
+
+function nextQ(){idx++;render();}
+function updateSB(){
+  document.getElementById('sc').textContent=corr;
+  document.getElementById('sw').textContent=wrng;
+  document.getElementById('sl').textContent=Math.max(0,queue.length-idx);
+}
+function showResult(){
+  document.getElementById('quizScr').classList.add('hide');
+  const rs=document.getElementById('resultScr');rs.classList.add('show');
+  const pct=queue.length?Math.round(corr/queue.length*100):0;
+  document.getElementById('rpct').textContent=pct+'%';
+  const g=pct>=90?'🏆 우수 – 합격 수준!':pct>=80?'✈️ 양호 – 조금만 더!':pct>=70?'📚 보통 – 복습 필요':'💪 더 열심히!';
+  document.getElementById('rgrade').textContent=g;
+  document.getElementById('rc').textContent=corr;
+  document.getElementById('rw').textContent=wrng;
+  document.getElementById('rt').textContent=queue.length;
+}
+function resetToSetup(){
+  document.getElementById('setupScr').style.display='block';
+  document.getElementById('quizScr').classList.add('hide');
+  document.getElementById('resultScr').classList.remove('show');
+}
+</script></body></html>

@@ -370,6 +370,8 @@ function start(){
   updateSB();render();
 }
 
+let shuffledOpts=[];
+
 function render(){
   if(idx>=queue.length){showResult();return;}
   answered=false;
@@ -378,11 +380,15 @@ function render(){
   document.getElementById('meta').textContent='문제 '+(idx+1)+' / '+queue.length;
   document.getElementById('qt').textContent=q.q;
   document.getElementById('pf').style.width=(idx/queue.length*100)+'%';
+
+  // 보기 랜덤 섞기
+  shuffledOpts=q.o.map((text,i)=>({text,isCorrect:i===q.a})).sort(()=>Math.random()-.5);
+
   const oc=document.getElementById('opts');oc.innerHTML='';
-  q.o.forEach((opt,i)=>{
+  shuffledOpts.forEach((opt,i)=>{
     const b=document.createElement('button');
     b.className='opt';
-    b.innerHTML='<span class="lbl">'+L[i]+'</span><span>'+opt+'</span>';
+    b.innerHTML='<span class="lbl">'+L[i]+'</span><span>'+opt.text+'</span>';
     b.onclick=()=>pick(i);
     oc.appendChild(b);
   });
@@ -393,12 +399,12 @@ function render(){
 
 function pick(i){
   if(answered)return;answered=true;
-  const q=queue[idx];
+  const correctIdx=shuffledOpts.findIndex(o=>o.isCorrect);
   const btns=document.querySelectorAll('.opt');
-  btns.forEach((b,j)=>{b.disabled=true;if(j===q.a)b.classList.add('ok');if(j===i&&i!==q.a)b.classList.add('ng');});
+  btns.forEach((b,j)=>{b.disabled=true;if(j===correctIdx)b.classList.add('ok');if(j===i&&i!==correctIdx)b.classList.add('ng');});
   const fb=document.getElementById('fb');
-  if(i===q.a){corr++;fb.className='fb ok show';fb.innerHTML='<b>✓ 정답입니다!</b>';}
-  else{wrng++;fb.className='fb ng show';fb.innerHTML='✗ 오답. 정답: <span class="ans">'+L[q.a]+'. '+q.o[q.a]+'</span>';}
+  if(i===correctIdx){corr++;fb.className='fb ok show';fb.innerHTML='<b>✓ 정답입니다!</b>';}
+  else{wrng++;fb.className='fb ng show';fb.innerHTML='✗ 오답. 정답: <span class="ans">'+L[correctIdx]+'. '+shuffledOpts[correctIdx].text+'</span>';}
   document.getElementById('nextBtn').classList.remove('hide');
   updateSB();
 }

@@ -318,12 +318,42 @@ let selCats=new Set(cats),qCount=10,queue=[],idx=0,corr=0,wrng=0,answered=false;
 
 // build setup
 const catRow=document.getElementById('catRow');
+
+// ALL 버튼
+const allBtn=document.createElement('button');
+allBtn.className='catb on';allBtn.textContent='✦ ALL';
+allBtn.style.borderColor='#2f81f7';allBtn.style.color='#2f81f7';allBtn.style.background='rgba(47,129,247,.15)';
+allBtn.onclick=()=>{
+  const allOn=selCats.size===cats.length;
+  if(allOn){
+    // 전체 해제 → 첫번째만 선택
+    selCats=new Set([cats[0]]);
+  } else {
+    // 전체 선택
+    selCats=new Set(cats);
+  }
+  updateCatBtns();
+};
+catRow.appendChild(allBtn);
+
+const catBtns=[];
 cats.forEach(cat=>{
   const b=document.createElement('button');
   b.className='catb on';b.textContent=cat;
-  b.onclick=()=>{if(selCats.has(cat)){if(selCats.size>1){selCats.delete(cat);b.classList.remove('on');}}else{selCats.add(cat);b.classList.add('on');}};
+  b.onclick=()=>{
+    if(selCats.has(cat)){if(selCats.size>1){selCats.delete(cat);}}
+    else{selCats.add(cat);}
+    updateCatBtns();
+  };
   catRow.appendChild(b);
+  catBtns.push({cat,btn:b});
 });
+
+function updateCatBtns(){
+  const allOn=selCats.size===cats.length;
+  allBtn.classList.toggle('on',allOn);
+  catBtns.forEach(({cat,btn})=>btn.classList.toggle('on',selCats.has(cat)));
+}
 document.querySelectorAll('.cntb').forEach(b=>{
   b.onclick=()=>{document.querySelectorAll('.cntb').forEach(x=>x.classList.remove('on'));b.classList.add('on');qCount=parseInt(b.dataset.n);};
 });

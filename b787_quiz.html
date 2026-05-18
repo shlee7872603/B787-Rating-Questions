@@ -384,16 +384,55 @@ document.querySelectorAll('.cntb').forEach(b=>{
 });
 document.getElementById('startBtn').onclick=start;
 
+// === 진행 상태 저장/복원 (localStorage) ===
+const SAVE_KEY='b787quiz_save';
+function saveState(){
+  // queue를 Q 배열 인덱스로 저장 (용량 절약)
+  const qIndices=queue.map(q=>Q.indexOf(q));
+  const data={qIndices,idx,corr,wrng,history};
+  try{localStorage.setItem(SAVE_KEY,JSON.stringify(data));}catch(e){}
+}
+function clearSave(){try{localStorage.removeItem(SAVE_KEY);}catch(e){}}
+function loadSave(){
+  try{
+    const raw=localStorage.getItem(SAVE_KEY);
+    if(!raw)return null;
+    return JSON.parse(raw);
+  }catch(e){return null;}
+}
+function resumeQuiz(data){
+  queue=data.qIndices.map(i=>Q[i]);
+  idx=data.idx;corr=data.corr;wrng=data.wrng;answered=false;
+  history=data.history||[];
+  document.getElementById('setupScr').style.display='none';
+  document.getElementById('quizScr').classList.remove('hide');
+  document.getElementById('resultScr').classList.remove('show');
+  updateSB();render();
+}
+
 function start(){
   const pool=Q.filter(q=>selCats.has(q.c)).sort(()=>Math.random()-.5);
   const n=qCount>=9999?pool.length:Math.min(qCount,pool.length);
   if(!n){alert('챕터를 선택하세요.');return;}
+  clearSave();
   queue=pool.slice(0,n);idx=0;corr=0;wrng=0;answered=false;history=[];
   document.getElementById('setupScr').style.display='none';
   document.getElementById('quizScr').classList.remove('hide');
   document.getElementById('resultScr').classList.remove('show');
   updateSB();render();
 }
+
+// 페이지 로드 시 저장된 퀴즈 복원
+(function checkResume(){
+  const data=loadSave();
+  if(data && data.qIndices && data.qIndices.length>0 && data.idx<data.qIndices.length){
+    const answered_cnt=data.history?data.history.filter(Boolean).length:0;
+    const total=data.qIndices.length;
+    if(confirm('이전에 풀던 퀴즈가 있습니다 ('+answered_cnt+'/'+total+'문제 완료). 이어서 풀까요?')){
+      resumeQuiz(data);
+    }else{clearSave();}
+  }
+})();
 
 let shuffledOpts=[];
 let history=[];
@@ -458,17 +497,18 @@ function pick(i){
   const explBody=document.getElementById('explBody');
   if(q.e){explBody.textContent=q.e;explEl.classList.add('show');}
   else{explEl.classList.remove('show');}
-  updateSB();
+  updateSB();saveState();
 }
 
-function nextQ(){idx++;render();}
-function prevQ(){if(idx>0){idx--;render();}}
+function nextQ(){idx++;render();saveState();}
+function prevQ(){if(idx>0){idx--;render();saveState();}}
 function updateSB(){
   document.getElementById('sc').textContent=corr;
   document.getElementById('sw').textContent=wrng;
   document.getElementById('sl').textContent=Math.max(0,queue.length-idx);
 }
 function showResult(){
+  clearSave();
   document.getElementById('quizScr').classList.add('hide');
   const rs=document.getElementById('resultScr');rs.classList.add('show');
   const pct=queue.length?Math.round(corr/queue.length*100):0;
@@ -480,6 +520,7 @@ function showResult(){
   document.getElementById('rt').textContent=queue.length;
 }
 function resetToSetup(){
+  clearSave();
   document.getElementById('setupScr').style.display='block';
   document.getElementById('quizScr').classList.add('hide');
   document.getElementById('resultScr').classList.remove('show');

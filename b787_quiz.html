@@ -71,6 +71,14 @@ h1{font-size:1.1rem;font-weight:700;display:flex;align-items:center;gap:8px}
 .nav-top{display:flex;gap:10px;margin-bottom:14px}
 .nav-top .btn{flex:1}
 .nav-top .btn:disabled{opacity:.4;cursor:not-allowed}
+.tag-btn{display:none;width:100%;padding:10px;border-radius:10px;border:1px solid #30363d;background:#21262d;color:#8b949e;cursor:pointer;font-family:'Noto Sans KR',sans-serif;font-size:.82rem;font-weight:500;margin-bottom:14px;transition:all .15s}
+.tag-btn.show{display:block}
+.tag-btn:hover{border-color:#da3633;color:#f85149}
+.tag-btn.tagged{border-color:#da3633;background:rgba(248,81,73,.1);color:#f85149}
+.setup-info{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:14px 18px;margin-bottom:20px;font-size:.82rem;color:#8b949e;display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center}
+.setup-info b{color:#e6edf3}
+.reset-btn{padding:4px 12px;border-radius:6px;border:1px solid #30363d;background:#21262d;color:#8b949e;cursor:pointer;font-family:'Noto Sans KR',sans-serif;font-size:.75rem;transition:all .15s}
+.reset-btn:hover{border-color:#f85149;color:#f85149}
 </style>
 </head>
 <body>
@@ -92,6 +100,13 @@ h1{font-size:1.1rem;font-weight:700;display:flex;align-items:center;gap:8px}
     <button class="cntb" data-n="100">100</button>
     <button class="cntb" data-n="9999">전체</button>
   </div>
+  <div class="setup-info" id="setupInfo">
+    <span>푼 문제: <b id="infoDone">0</b>개</span>
+    <span>제외 문제: <b id="infoTagged">0</b>개</span>
+    <span>출제 가능: <b id="infoAvail">0</b>개</span>
+    <button class="reset-btn" id="resetDoneBtn">풀이 기록 초기화</button>
+    <button class="reset-btn" id="resetTagBtn">제외 태그 초기화</button>
+  </div>
   <button class="startb" id="startBtn">퀴즈 시작 →</button>
 </div>
 
@@ -106,6 +121,7 @@ h1{font-size:1.1rem;font-weight:700;display:flex;align-items:center;gap:8px}
     <button class="btn btns" id="prevBtn" onclick="prevQ()">← 이전 문제</button>
     <button class="btn btnp" id="nextBtn" onclick="nextQ()">다음 문제 →</button>
   </div>
+  <button class="tag-btn" id="tagBtn" onclick="toggleTag()">📌 다음 테스트에서 제외</button>
   <div class="diff-box" id="diffBox"><div class="diff-title">🔍 FCOM 원문 비교</div><div class="diff-body" id="diffBody"></div></div>
   <div class="expl" id="expl"><div class="expl-title">📖 FCOM 해설</div><div class="expl-body" id="explBody"></div></div>
   <div class="acts">
@@ -384,11 +400,16 @@ function updateCatBtns(){
   const allOn=selCats.size===cats.length;
   allBtn.classList.toggle('on',allOn);
   catBtns.forEach(({cat,btn})=>btn.classList.toggle('on',selCats.has(cat)));
+  updateSetupInfo();
 }
 document.querySelectorAll('.cntb').forEach(b=>{
   b.onclick=()=>{document.querySelectorAll('.cntb').forEach(x=>x.classList.remove('on'));b.classList.add('on');qCount=parseInt(b.dataset.n);};
 });
 document.getElementById('startBtn').onclick=start;
+document.getElementById('resetDoneBtn').onclick=function(){if(confirm('풀이 기록을 초기화합니다. 모든 문제가 다시 출제됩니다.')){setDone(new Set());updateSetupInfo();}};
+document.getElementById('resetTagBtn').onclick=function(){if(confirm('제외 태그를 초기화합니다. 제외했던 문제가 다시 출제됩니다.')){setTagged(new Set());updateSetupInfo();}};
+
+updateSetupInfo();
 
 // === 진행 상태 저장/복원 (localStorage) ===
 const SAVE_KEY='b787quiz_save';
@@ -417,9 +438,11 @@ function resumeQuiz(data){
 }
 
 function start(){
-  const pool=Q.filter(q=>selCats.has(q.c)).sort(()=>Math.random()-.5);
+  const tagged=getTagged();
+  const done=getDone();
+  const pool=Q.filter(q=>selCats.has(q.c)).filter(q=>{const i=Q.indexOf(q);return !tagged.has(i)&&!done.has(i);}).sort(()=>Math.random()-.5);
   const n=qCount>=9999?pool.length:Math.min(qCount,pool.length);
-  if(!n){alert('챕터를 선택하세요.');return;}
+  if(!n){alert('출제 가능한 문제가 없습니다. 풀이 기록이나 제외 태그를 초기화해주세요.');return;}
   clearSave();
   queue=pool.slice(0,n);idx=0;corr=0;wrng=0;answered=false;history=[];
   document.getElementById('setupScr').style.display='none';
@@ -439,6 +462,41 @@ function start(){
     }else{clearSave();}
   }
 })();
+
+// === 제외 태그 & 풀이 기록 (localStorage) ===
+const TAGGED_KEY='b787quiz_tagged';
+const DONE_KEY='b787quiz_done';
+function getTagged(){try{return new Set(JSON.parse(localStorage.getItem(TAGGED_KEY)||'[]'));}catch(e){return new Set();}}
+function setTagged(s){try{localStorage.setItem(TAGGED_KEY,JSON.stringify([...s]));}catch(e){}}
+function getDone(){try{return new Set(JSON.parse(localStorage.getItem(DONE_KEY)||'[]'));}catch(e){return new Set();}}
+function setDone(s){try{localStorage.setItem(DONE_KEY,JSON.stringify([...s]));}catch(e){}}
+
+function toggleTag(){
+  const q=queue[idx];
+  const qi=Q.indexOf(q);
+  const tagged=getTagged();
+  if(tagged.has(qi)){tagged.delete(qi);}else{tagged.add(qi);}
+  setTagged(tagged);
+  updateTagBtn();
+}
+function updateTagBtn(){
+  const btn=document.getElementById('tagBtn');
+  const q=queue[idx];
+  const qi=Q.indexOf(q);
+  const isTagged=getTagged().has(qi);
+  btn.textContent=isTagged?'📌 제외 해제':'📌 다음 테스트에서 제외';
+  btn.classList.toggle('tagged',isTagged);
+}
+function updateSetupInfo(){
+  const tagged=getTagged();
+  const done=getDone();
+  const pool=Q.filter(q=>selCats.has(q.c));
+  const poolIndices=pool.map(q=>Q.indexOf(q));
+  const availCount=poolIndices.filter(i=>!tagged.has(i)&&!done.has(i)).length;
+  document.getElementById('infoDone').textContent=done.size;
+  document.getElementById('infoTagged').textContent=tagged.size;
+  document.getElementById('infoAvail').textContent=availCount;
+}
 
 let shuffledOpts=[];
 let history=[];
@@ -470,6 +528,7 @@ function render(){
   document.getElementById('expl').classList.remove('show');
   document.getElementById('diffBox').classList.remove('show');
   document.getElementById('navTop').classList.add('hide');
+  document.getElementById('tagBtn').classList.remove('show','tagged');
 
   // 이전 답변 복원
   if(prev){
@@ -489,6 +548,8 @@ function render(){
       showDiff(shuffledOpts[picked].text, q);
     }
     document.getElementById('navTop').classList.remove('hide');
+    document.getElementById('tagBtn').classList.add('show');
+    updateTagBtn();
   }
 
   // 이전 문제 버튼 활성화 상태
@@ -569,7 +630,11 @@ function pick(i){
   else{wrng++;fb.className='fb ng show';fb.innerHTML='✗ 오답. 정답: <span class="ans">'+L[correctIdx]+'. '+shuffledOpts[correctIdx].text+'</span>';}
   // 답변 기록 저장 (점수 중복 방지용)
   history[idx]={picked:i,correctIdx:correctIdx,shuffledOpts:shuffledOpts};
+  // 풀이 기록에 추가
+  const doneSet=getDone();doneSet.add(Q.indexOf(queue[idx]));setDone(doneSet);
   document.getElementById('navTop').classList.remove('hide');
+  document.getElementById('tagBtn').classList.add('show');
+  updateTagBtn();
   // Show FCOM diff
   const q=queue[idx];
   const wrongType=isWrongType(q.q);
@@ -613,5 +678,6 @@ function resetToSetup(){
   document.getElementById('setupScr').style.display='block';
   document.getElementById('quizScr').classList.add('hide');
   document.getElementById('resultScr').classList.remove('show');
+  updateSetupInfo();
 }
 </script></body></html>
